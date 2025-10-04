@@ -1,0 +1,140 @@
+site_name: Go REST API Boilerplate (GRAB) - Documentation
+site_description: Comprehensive documentation for Go REST API Boilerplate — setup guides, architecture overview, API references, and deployment instructions
+site_author: vahiiiid
+site_url: https://vahiiiid.github.io/go-rest-api-docs/
+repo_url: https://github.com/vahiiiid/go-rest-api-docs
+repo_name: vahiiiid/go-rest-api-docs
+edit_uri: edit/main/docs/
+
+# Theme configuration
+theme:
+  name: material
+  logo: null
+  favicon: images/logo.svg
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - toc.follow
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.action.edit
+    - content.tabs.link
+  icon:
+    repo: fontawesome/brands/github
+
+# Extensions
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Plugins
+plugins:
+  - search:
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+  - minify:
+      minify_html: true
+
+# Extra configuration
+extra:
+  version:
+    provider: mike
+    default: stable
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/vahiiiid/go-rest-api-boilerplate
+      name: Main Repository
+    - icon: fontawesome/brands/github
+      link: https://github.com/vahiiiid/go-rest-api-docs
+      name: Documentation Repository
+  generator: false
+
+# Custom CSS
+extra_css:
+  - stylesheets/extra.css
+
+# Copyright
+copyright: Copyright &copy; 2025 vahiiiid - MIT License
+
+# Navigation structure
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Setup Guide: SETUP.md
+      - Quick Reference: QUICK_REFERENCE.md
+  - Development:
+      - Development Guide: DEVELOPMENT_GUIDE.md
+      - Project Summary: PROJECT_SUMMARY.md
+      - Migrations Overview: MIGRATIONS_OVERVIEW.md
+      - Migrations Guide: MIGRATIONS_GUIDE.md
+  - Example: TODO_EXAMPLE.md
+  - Testing: TESTING.md
+  - Infrastructure:
+      - Docker Guide: DOCKER.md
+      - Swagger API Docs: SWAGGER.md
+      - Documentation Setup: DOCS_SETUP.md
