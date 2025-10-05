@@ -24,7 +24,7 @@ Complete setup instructions for the Go REST API Boilerplate (GRAB).
 The fastest way to get started is using Docker with our automated setup:
 
 <div align="center">
-  <img src="images/quick-start-light.gif" alt="Quick Start Demo" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px; margin: 20px 0;">
+  <img src="https://vahiiiid.github.io/go-rest-api-docs/images/quick-start-light.gif" alt="Quick Start Demo" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px; margin: 20px 0;">
 </div>
 
 ### One-Command Setup ⚡
@@ -69,10 +69,25 @@ curl -X POST http://localhost:8080/api/v1/auth/register \
     "email": "alice@example.com",
     "password": "secret123"
   }'
-
-# Visit Swagger UI for interactive docs
-open http://localhost:8080/swagger/index.html
 ```
+
+### Explore Your API 🔍
+
+**Interactive Swagger Documentation:**
+
+<div align="center">
+  <img src="https://vahiiiid.github.io/go-rest-api-docs/images/swagger-ui.png" alt="Swagger UI" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px; margin: 20px 0;">
+</div>
+
+Open [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html) to explore and test all endpoints interactively.
+
+**Or Use Postman Collection:**
+
+<div align="center">
+  <img src="https://vahiiiid.github.io/go-rest-api-docs/images/postman-collection.png" alt="Postman Collection" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px; margin: 20px 0;">
+</div>
+
+Import the pre-configured collection from `api/postman_collection.json` with example requests and tests.
 
 ---
 
