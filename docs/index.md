@@ -14,12 +14,46 @@
 
 <p>
 <a href="https://github.com/vahiiiid/go-rest-api-boilerplate">🚀 Main Repository</a> | 
-<a href="https://vahiiiid.github.io/go-rest-api-docs/">📖 Documentation</a> | 
 <a href="https://github.com/vahiiiid/go-rest-api-boilerplate/releases/tag/v1.0.0">📋 Changelog</a> | 
 <a href="https://github.com/vahiiiid/go-rest-api-boilerplate/issues">🐛 Report Issues</a>
 </p>
 
 </div>
+
+---
+
+## 🎯 Why GRAB?
+
+**Building a REST API in Go shouldn't take days of setup.** GRAB gives you a production-ready foundation so you can focus on building features, not infrastructure.
+
+### The Problem We Solve
+
+When starting a new Go REST API project, you typically spend days:
+- 🔧 Setting up project structure and deciding on architecture
+- 🔐 Implementing authentication and security
+- 🐳 Configuring Docker, hot-reload, and development environment
+- 📚 Setting up API documentation and testing tools
+- 🗄️ Configuring database, migrations, and ORM
+- ✅ Writing tests and CI/CD pipelines
+
+### The GRAB Solution
+
+**One command. Two minutes. Production-ready.**
+
+```bash
+make quick-start
+```
+
+That's it. You get a fully configured, battle-tested REST API with:
+
+- ✅ **Clean Architecture** - Layered structure that scales
+- ✅ **JWT Authentication** - Secure, ready to use
+- ✅ **Hot-Reload Development** - See changes in 2 seconds
+- ✅ **Database Migrations** - Version-controlled schema
+- ✅ **Interactive API Docs** - Swagger UI out of the box
+- ✅ **Automated Tests** - Unit and integration tests
+- ✅ **Docker-First** - Consistent environments
+- ✅ **Production Optimized** - Multi-stage builds, security best practices
 
 ---
 
@@ -29,82 +63,110 @@
 
 - :material-shield-check: **JWT Authentication**
   
-    Secure token-based authentication with HS256 algorithm
+    Secure token-based authentication with HS256 algorithm and bcrypt password hashing
 
 - :material-account-group: **User Management**
   
-    Complete CRUD operations with validation
+    Complete CRUD operations with validation and error handling
 
 - :material-database: **PostgreSQL + GORM**
   
-    Robust database with powerful ORM
+    Robust database with powerful ORM and automated migrations
 
 - :material-docker: **Docker Development**
   
-    Hot-reload with Air (~2 sec feedback)
+    Hot-reload with Air (~2 sec feedback), volume mounting for live code sync
 
 - :material-rocket-launch: **Production Ready**
   
-    Optimized multi-stage Docker builds
+    Optimized multi-stage Docker builds, minimal Alpine images
 
 - :material-api: **Swagger/OpenAPI**
   
-    Interactive API documentation
+    Interactive API documentation with "Try it out" feature
 
 - :material-database-sync: **Database Migrations**
   
-    Version-controlled schema changes
+    Version-controlled schema changes with golang-migrate
 
 - :material-test-tube: **Automated Testing**
   
-    Unit & integration tests
+    Unit & integration tests with 75%+ coverage
 
 - :material-github: **GitHub Actions CI**
   
-    Automated linting and testing
+    Automated linting, testing, and code quality checks
 
 - :material-console: **Make Commands**
   
-    Simplified workflow automation
-
-- :material-script-text: **Helper Scripts**
-  
-    Quick setup and verification tools
+    Simplified workflow automation with auto-detection (Docker/host)
 
 - :material-postage-stamp: **Postman Collection**
   
-    Pre-configured API tests
+    Pre-configured API tests with example requests
 
 - :material-layers: **Clean Architecture**
   
-    Layered, maintainable structure
+    Layered, maintainable structure (Handler → Service → Repository)
 
 - :material-security: **Security Best Practices**
   
-    Bcrypt hashing, input validation
+    Bcrypt hashing, input validation, SQL injection protection
 
 - :material-web: **CORS Support**
   
-    Configurable cross-origin requests
+    Configurable cross-origin requests for frontend integration
+
+- :material-code-braces: **Code Quality**
+  
+    golangci-lint configured with best practices
 
 </div>
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Perfect For
 
-Get up and running in **under 2 minutes**:
+<div class="grid cards" markdown>
 
-### Prerequisites
+- :material-rocket-launch: **Starting New Projects**
+  
+    Skip the setup headache and start building features immediately
 
-- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
-- [Git](https://git-scm.com/downloads)
+- :material-school: **Learning Go Web Development**
+  
+    Production-quality examples and best practices to learn from
 
-### One-Command Setup ⚡
+- :material-domain: **Building Scalable APIs**
+  
+    Architecture that grows with your application
+
+- :material-account-group: **Team Projects**
+  
+    Consistent structure and standards that everyone can follow
+
+- :material-speedometer: **Rapid Prototyping**
+  
+    Get your MVP running in minutes, not days
+
+- :material-briefcase: **Enterprise Applications**
+  
+    Battle-tested patterns and security best practices
+
+</div>
+
+---
+
+## 🎬 Quick Start
+
+Get your API running in **under 2 minutes**:
 
 ```bash
+# Clone the repository
 git clone https://github.com/vahiiiid/go-rest-api-boilerplate.git
 cd go-rest-api-boilerplate
+
+# One command to rule them all
 make quick-start
 ```
 
@@ -114,35 +176,7 @@ make quick-start
 - **Swagger UI:** http://localhost:8080/swagger/index.html
 - **Health Check:** http://localhost:8080/health
 
-### What Just Happened?
-
-The `quick-start` command automatically:
-
-1. ✅ Installed development tools (swag, golangci-lint, migrate, air)
-2. ✅ Verified all prerequisites and dependencies
-3. ✅ Created `.env` file from template
-4. ✅ Generated Swagger documentation
-5. ✅ Built and started Docker containers
-6. ✅ Ran database migrations (via AutoMigrate)
-
-### Try It Out 🧪
-
-```bash
-# Check health
-curl http://localhost:8080/health
-
-# Register a user
-curl -X POST http://localhost:8080/api/v1/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Alice Smith",
-    "email": "alice@example.com",
-    "password": "secret123"
-  }'
-
-# Visit Swagger UI for interactive docs
-open http://localhost:8080/swagger/index.html
-```
+**➡️ [Full Setup Guide](SETUP.md)** for more options (manual setup, production deployment)
 
 ---
 
@@ -152,15 +186,19 @@ open http://localhost:8080/swagger/index.html
 
 - :material-book-open-page-variant: **[Setup Guide](SETUP.md)**
   
-    Detailed installation and configuration instructions
+    Quick start, Docker development, manual setup, and production deployment
 
 - :material-code-braces: **[Development Guide](DEVELOPMENT_GUIDE.md)**
   
-    Learn how to build your own features
+    Learn the architecture and how to build your own features
 
 - :material-checkbox-marked-circle: **[TODO List Example](TODO_EXAMPLE.md)**
   
-    Complete step-by-step tutorial with working code
+    Complete step-by-step tutorial showing how to add new endpoints
+
+- :material-test-tube: **[Testing Guide](TESTING.md)**
+  
+    How to write and run tests for your API
 
 - :material-docker: **[Docker Guide](DOCKER.md)**
   
@@ -217,128 +255,15 @@ GRAB follows **clean architecture** principles with clear separation of concerns
 
 ---
 
-## 💻 Development Workflow
-
-```bash
-# Start containers with hot-reload
-make docker-up
-
-# Edit code in your IDE
-# Changes auto-reload in ~2 seconds! ✨
-
-# Check code quality
-make lint
-
-# Run tests
-make test
-
-# Generate/update Swagger docs
-make swag
-
-# Stop containers
-make docker-down
-```
-
----
-
-## 📚 API Endpoints
-
-### Swagger UI
-
-Interactive API documentation with "Try it out" feature:
-
-<div align="center">
-<img src="images/swagger-ui.png" alt="Swagger UI" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px; margin: 20px 0;">
-</div>
-
-Visit `http://localhost:8080/swagger/index.html` to explore and test all endpoints directly from your browser!
-
-### Authentication
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/v1/auth/register` | Register new user |
-| POST | `/api/v1/auth/login` | Login user |
-
-### Users (Protected)
-
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/api/v1/users` | List users (paginated) | ✅ |
-| GET | `/api/v1/users/:id` | Get user by ID | ✅ |
-| PUT | `/api/v1/users/:id` | Update user | ✅ |
-| DELETE | `/api/v1/users/:id` | Delete user | ✅ |
-
-### Health
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check |
-
-### Postman Collection
-
-Pre-configured Postman collection with all endpoints and tests:
-
-<div align="center">
-<img src="images/postman-collection.png" alt="Postman Collection" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px; margin: 20px 0;">
-</div>
-
-Import `api/postman_collection.json` to get started with automated testing!
-
----
-
-## 🔐 Security Features
-
-- **Password Hashing** - Bcrypt with configurable cost (default: 10)
-- **JWT Tokens** - Secure token generation and validation (HS256)
-- **Input Validation** - Request validation using Gin binding tags
-- **SQL Injection Protection** - GORM parameterized queries
-- **CORS** - Configurable cross-origin resource sharing
-- **Environment Variables** - Sensitive data never hardcoded
-
-!!! warning "Production Checklist"
-    - Change `JWT_SECRET` to a strong, random value
-    - Use strong database passwords
-    - Enable HTTPS/TLS
-    - Configure proper CORS origins
-    - Set up rate limiting
-    - Enable database connection encryption
-    - Regular dependency updates
-
----
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please read our [contributing guidelines](https://github.com/vahiiiid/go-rest-api-boilerplate/blob/main/CONTRIBUTING.md) before submitting pull requests.
-
-### Quick Guidelines
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linter
-5. Commit your changes
-6. Push to the branch
-7. Open a Pull Request
 
 ---
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/vahiiiid/go-rest-api-boilerplate/blob/main/LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-Built with these amazing tools:
-
-- [Gin](https://github.com/gin-gonic/gin) - HTTP web framework
-- [GORM](https://gorm.io/) - ORM library
-- [golang-jwt](https://github.com/golang-jwt/jwt) - JWT implementation
-- [swaggo](https://github.com/swaggo/swag) - Swagger documentation
-- [Air](https://github.com/air-verse/air) - Hot-reload for development
-- [golang-migrate](https://github.com/golang-migrate/migrate) - Database migrations
 
 ---
 
