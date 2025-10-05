@@ -76,7 +76,6 @@ go-rest-api-boilerplate/
 ### API Endpoints
 - `POST /api/v1/auth/register` - User registration
 - `POST /api/v1/auth/login` - User login
-- `GET /api/v1/users` - List users (protected)
 - `GET /api/v1/users/:id` - Get user (protected)
 - `PUT /api/v1/users/:id` - Update user (protected)
 - `DELETE /api/v1/users/:id` - Delete user (protected)

@@ -586,7 +586,6 @@ func SetupRouter(userHandler *user.UserHandler, authService *auth.AuthService, t
     protected.Use(auth.AuthMiddleware(authService))
     {
         // User routes
-        protected.GET("/users", userHandler.ListUsers)
         protected.GET("/users/:id", userHandler.GetUser)
         protected.PUT("/users/:id", userHandler.UpdateUser)
         protected.DELETE("/users/:id", userHandler.DeleteUser)
