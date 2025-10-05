@@ -1,355 +1,570 @@
 # Setup Guide
 
-Complete setup instructions for the Go REST API Boilerplate.
+Complete setup instructions for the Go REST API Boilerplate (GRAB).
 
-## Prerequisites
+---
 
-### Required
+## 📋 Prerequisites
+
+### Required for Docker Setup (Recommended)
+- **Docker** ([Download](https://www.docker.com/products/docker-desktop))
+- **Docker Compose** ([Download](https://docs.docker.com/compose/install/))
+- **Git** ([Download](https://git-scm.com/downloads))
+
+### Required for Manual Setup
 - **Go 1.23+** ([Download](https://golang.org/dl/))
-- **Docker & Docker Compose** ([Download](https://www.docker.com/products/docker-desktop))
-
-### Optional (for local development without Docker)
-- **PostgreSQL 13+** ([Download](https://www.postgresql.org/download/))
+- **PostgreSQL 15+** ([Download](https://www.postgresql.org/download/))
+- **Git** ([Download](https://git-scm.com/downloads))
 - **Make** (usually pre-installed on Unix systems)
 
-## Quick Start (Recommended)
+---
 
-The fastest way to get started is using our automated setup script:
+## 🚀 Quick Start (Recommended)
+
+The fastest way to get started is using Docker with our automated setup:
+
+<div align="center">
+  <img src="images/quick-start-light.gif" alt="Quick Start Demo" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px; margin: 20px 0;">
+</div>
+
+### One-Command Setup ⚡
 
 ```bash
 # 1. Clone the repository
 git clone https://github.com/vahiiiid/go-rest-api-boilerplate.git
 cd go-rest-api-boilerplate
 
-# 2. Run the quick start script
-./scripts/quick-start.sh
-# or
+# 2. Run quick start
 make quick-start
 ```
 
-This script will automatically:
-- ✅ Install development tools (swag, golangci-lint, migrate, air)
-- ✅ Verify all prerequisites and dependencies
-- ✅ Create `.env` file from template
-- ✅ Generate Swagger documentation
-- ✅ Start all services with docker-compose
-- ✅ Display access points
+**🎉 Done!** Your API is now running at:
 
-✅ That's it! The API is now running at http://localhost:8080
+- **API Base URL:** http://localhost:8080/api/v1
+- **Swagger UI:** http://localhost:8080/swagger/index.html
+- **Health Check:** http://localhost:8080/health
 
-### Manual Quick Start
+### What Just Happened?
 
-If you prefer manual steps:
+The `quick-start` command automatically:
+
+1. ✅ Checked Docker and Docker Compose installation
+2. ✅ Created `.env` file from template
+3. ✅ Built Docker images with all development tools
+4. ✅ Started PostgreSQL and application containers
+5. ✅ Ran database migrations
+6. ✅ Generated Swagger documentation
+
+### Try It Out 🧪
 
 ```bash
-# 1. Install development tools
-make install-tools
-# or
-./scripts/install-tools.sh
-
-# 2. Copy environment file
-cp .env.example .env
-
-# 3. Generate Swagger docs
-make swag
-# or
-./scripts/init-swagger.sh
-
-# 4. Start everything with Docker
-docker-compose up --build
-```
-
-## Detailed Setup
-
-### 1. Environment Configuration
-
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
-
-**Important**: Change the `JWT_SECRET` in production:
-```bash
-# Generate a secure random secret
-openssl rand -hex 32
-```
-
-### 2. Option A: Docker Setup (Recommended)
-
-Start the application with PostgreSQL:
-```bash
-docker-compose up --build
-```
-
-Stop the services:
-```bash
-docker-compose down
-```
-
-Remove volumes (clean database):
-```bash
-docker-compose down -v
-```
-
-### 3. Option B: Local Development Setup
-
-#### Install Development Tools
-```bash
-make install-tools
-# or
-./scripts/install-tools.sh
-```
-
-This installs:
-- `swag` - Swagger documentation generator
-- `golangci-lint` - Go linter
-- `migrate` - Database migration tool
-- `air` - Hot-reload for development
-
-#### Install Dependencies
-```bash
-go mod download
-```
-
-#### Setup PostgreSQL
-Create a database:
-```bash
-psql -U postgres
-CREATE DATABASE go_api;
-\q
-```
-
-Or use Docker for just the database:
-```bash
-docker run --name go_api_db \
-  -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=go_api \
-  -p 5432:5432 \
-  -d postgres:15-alpine
-```
-
-#### Configure Environment
-Update your `.env` with local settings:
-```bash
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=go_api
-JWT_SECRET=your-super-secret-key-here
-PORT=8080
-```
-
-#### Run the Application
-```bash
-make run
-# or
-go run ./cmd/server
-```
-
-### 4. Generate Swagger Documentation
-
-Generate docs (swag must be installed via `make install-tools`):
-```bash
-make swag
-# or
-./scripts/init-swagger.sh
-```
-
-After running the app, access Swagger UI at:
-http://localhost:8080/swagger/index.html
-
-### 5. Development Tools
-
-All development tools can be installed at once:
-```bash
-make install-tools
-# or
-./scripts/install-tools.sh
-```
-
-This installs: `swag`, `golangci-lint`, `migrate`, and `air`.
-
-#### Run Linter
-```bash
-make lint
-```
-
-#### Run Tests
-```bash
-make test
-```
-
-With coverage:
-```bash
-make test-coverage
-```
-
-## Verification
-
-### Automated Verification (Recommended)
-
-Run our comprehensive verification script:
-```bash
-make verify
-# or
-./scripts/verify-setup.sh
-```
-
-This checks:
-- ✅ Go installation
-- ✅ Docker installation
-- ✅ Development tools (swag, golangci-lint, migrate, air)
-- ✅ All required files exist
-- ✅ Code compiles
-- ✅ Tests pass
-- ✅ go vet passes
-
-### Manual Verification
-
-1. **Health Check**
-```bash
+# Check health
 curl http://localhost:8080/health
-```
-Expected: `{"status":"ok","message":"Server is running"}`
 
-2. **Register a User**
-```bash
+# Register a user
 curl -X POST http://localhost:8080/api/v1/auth/register \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "Test User",
-    "email": "test@example.com",
-    "password": "password123"
+    "name": "Alice Smith",
+    "email": "alice@example.com",
+    "password": "secret123"
   }'
+
+# Visit Swagger UI for interactive docs
+open http://localhost:8080/swagger/index.html
 ```
-
-3. **Access Swagger UI**
-Open: http://localhost:8080/swagger/index.html
-
-## Troubleshooting
-
-### Database Connection Errors
-
-**Error**: `failed to connect to database`
-
-**Solution**:
-- Verify PostgreSQL is running
-- Check credentials in `.env`
-- Ensure database exists
-- For Docker: wait for DB to be ready (healthcheck)
-
-### Port Already in Use
-
-**Error**: `bind: address already in use`
-
-**Solution**:
-```bash
-# Find and kill the process
-lsof -ti:8080 | xargs kill -9
-# or change PORT in .env
-```
-
-### Import Errors
-
-**Error**: `cannot find package`
-
-**Solution**:
-```bash
-go mod download
-go mod tidy
-```
-
-### Swagger Not Generated
-
-**Error**: `404 on /swagger/*`
-
-**Solution**:
-```bash
-# Install swag
-go install github.com/swaggo/swag/cmd/swag@latest
-
-# Generate docs
-make swag
-
-# Rebuild and restart
-make build
-./bin/server
-```
-
-### Docker Build Fails
-
-**Solution**:
-```bash
-# Clean Docker cache
-docker-compose down -v
-docker system prune -a
-
-# Rebuild
-docker-compose up --build
-```
-
-## IDE Setup
-
-### VSCode
-
-Recommended extensions:
-- `golang.go` - Official Go extension
-- `42Crunch.vscode-openapi` - OpenAPI/Swagger support
-- `humao.rest-client` - Test API endpoints
-
-Settings:
-```json
-{
-  "go.useLanguageServer": true,
-  "go.lintTool": "golangci-lint",
-  "go.lintOnSave": "workspace"
-}
-```
-
-### GoLand / IntelliJ IDEA
-
-1. Enable Go Modules: `Preferences → Go → Go Modules`
-2. Enable format on save: `Preferences → Tools → Actions on Save`
-3. Configure run configuration with environment variables
-
-## Next Steps
-
-1. ✅ Read the [README.md](README.md) for API documentation
-2. ✅ Check [CONTRIBUTING.md](CONTRIBUTING.md) if you want to contribute
-3. ✅ Explore the [Swagger UI](http://localhost:8080/swagger/index.html)
-4. ✅ Review the code structure in `internal/`
-5. ✅ Run tests: `make test`
-
-## Production Deployment
-
-For production deployment:
-
-1. **Change JWT_SECRET** to a strong random value
-2. **Use proper migrations** instead of AutoMigrate (see `migrations/README.md`)
-3. **Set ENV=production** in your environment
-4. **Use managed PostgreSQL** (AWS RDS, Cloud SQL, etc.)
-5. **Enable HTTPS** with a reverse proxy (nginx, Caddy)
-6. **Set up monitoring** (Prometheus, Datadog, etc.)
-7. **Configure logging** properly (structured logs)
-8. **Use secrets management** (Vault, AWS Secrets Manager)
-
-See deployment examples in `docs/deployment/` (coming soon).
-
-## Resources
-
-- [Go Documentation](https://golang.org/doc/)
-- [Gin Framework](https://gin-gonic.com/docs/)
-- [GORM Guide](https://gorm.io/docs/)
-- [Swagger/OpenAPI Spec](https://swagger.io/specification/)
-
-## Support
-
-- 📖 [Documentation](README.md)
-- 🐛 [Issue Tracker](https://github.com/vahiiiid/go-rest-api-boilerplate/issues)
-- 💬 [Discussions](https://github.com/vahiiiid/go-rest-api-boilerplate/discussions)
 
 ---
 
-**Need Help?** Open an issue on GitHub!
+## 🐳 Docker Development Setup
 
+For ongoing development with hot-reload and live code synchronization.
+
+### Start Development Environment
+
+```bash
+# Start containers with hot-reload
+make up
+
+# View logs
+make logs
+
+# Stop containers
+make down
+```
+
+### Development Workflow
+
+```bash
+# Edit code in your IDE
+# Changes auto-reload in ~2 seconds! ✨
+
+# Check code quality
+make lint
+
+# Fix linting issues
+make lint-fix
+
+# Run tests
+make test
+
+# View test coverage
+make test-coverage
+
+# Generate/update Swagger docs
+make swag
+
+# Run database migrations
+make migrate-up
+
+# Rollback migrations
+make migrate-down
+```
+
+### Container Details
+
+**Development Container:**
+- Base: `golang:1.23-bookworm` (Debian for SQLite compatibility)
+- Includes: `air`, `swag`, `golangci-lint`, `migrate`
+- Hot-reload: Changes detected in ~2 seconds
+- Volume: Code synced from host to container
+
+**Database Container:**
+- Image: `postgres:15-alpine`
+- Port: `5432` (only accessible within Docker network)
+- Data: Persisted in Docker volume
+
+### Accessing Containers
+
+```bash
+# Access application container
+docker exec -it go_api_app bash
+
+# Access database container
+docker exec -it go_api_db psql -U postgres -d go_api_db
+
+# View container logs
+docker logs go_api_app -f
+docker logs go_api_db -f
+```
+
+---
+
+## 💻 Manual Development Setup
+
+For developers who prefer to run the application directly on their host machine.
+
+### Step 1: Install Go
+
+Ensure you have **Go 1.23 or later** installed:
+
+```bash
+# Check Go version
+go version
+
+# Should output: go version go1.23.x ...
+```
+
+If Go is not installed, download it from [https://golang.org/dl/](https://golang.org/dl/)
+
+### Step 2: Install PostgreSQL
+
+Install and start PostgreSQL 15+:
+
+**macOS (Homebrew):**
+```bash
+brew install postgresql@15
+brew services start postgresql@15
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt update
+sudo apt install postgresql-15
+sudo systemctl start postgresql
+```
+
+**Windows:**
+Download from [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/)
+
+### Step 3: Create Database
+
+```bash
+# Access PostgreSQL
+psql -U postgres
+
+# Create database and user
+CREATE DATABASE go_api_db;
+CREATE USER go_api_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE go_api_db TO go_api_user;
+\q
+```
+
+### Step 4: Clone Repository
+
+```bash
+git clone https://github.com/vahiiiid/go-rest-api-boilerplate.git
+cd go-rest-api-boilerplate
+```
+
+### Step 5: Install Development Tools
+
+```bash
+# Install Swagger generator
+go install github.com/swaggo/swag/cmd/swag@latest
+
+# Install linter
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
+# Install migration tool
+go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
+# Install hot-reload tool (optional for development)
+go install github.com/air-verse/air@v1.52.3
+```
+
+### Step 6: Configure Environment
+
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Edit .env file
+nano .env
+```
+
+Update these values:
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=go_api_user
+DB_PASSWORD=your_password
+DB_NAME=go_api_db
+JWT_SECRET=your-secret-key-change-this-in-production
+```
+
+### Step 7: Install Dependencies
+
+```bash
+# Download Go modules
+go mod download
+```
+
+### Step 8: Generate Swagger Documentation
+
+```bash
+# Generate Swagger docs
+swag init -g cmd/server/main.go -o ./docs/swagger
+```
+
+### Step 9: Run Database Migrations
+
+```bash
+# Run migrations (if you have migration files)
+migrate -path migrations -database "postgresql://go_api_user:your_password@localhost:5432/go_api_db?sslmode=disable" up
+
+# Or use GORM AutoMigrate (happens automatically on first run)
+```
+
+### Step 10: Run the Application
+
+**Option 1: Using Make (with hot-reload)**
+```bash
+# Build and run binary
+make run-binary
+```
+
+**Option 2: Using Go directly**
+```bash
+# Run with go run
+go run cmd/server/main.go
+
+# Or build and run binary
+go build -o bin/server cmd/server/main.go
+./bin/server
+```
+
+**Option 3: Using Air (hot-reload)**
+```bash
+# Run with hot-reload
+air -c .air.toml
+```
+
+### Verify Installation
+
+```bash
+# Check health endpoint
+curl http://localhost:8080/health
+
+# Open Swagger UI
+open http://localhost:8080/swagger/index.html
+```
+
+### Development Commands
+
+```bash
+# Run tests
+go test ./...
+
+# Run tests with coverage
+go test -v -cover ./...
+
+# Generate coverage report
+go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out -o coverage.html
+
+# Run linter
+golangci-lint run
+
+# Fix linting issues
+golangci-lint run --fix
+
+# Update Swagger docs
+swag init -g cmd/server/main.go -o ./docs/swagger
+
+# Create new migration
+migrate create -ext sql -dir migrations -seq your_migration_name
+```
+
+---
+
+## 🏭 Production Deployment
+
+### Option 1: Docker Production Build
+
+**Build production image:**
+```bash
+# Build optimized production image
+docker build --target production -t go-api:latest .
+```
+
+The production image:
+- Base: `alpine:latest` (minimal size ~20MB)
+- Binary: Statically compiled with `CGO_ENABLED=0`
+- No development tools included
+- Optimized for security and performance
+
+**Run production container:**
+```bash
+# Run with environment variables
+docker run -d \
+  --name go-api \
+  -p 8080:8080 \
+  -e DB_HOST=your-db-host \
+  -e DB_PORT=5432 \
+  -e DB_USER=your-db-user \
+  -e DB_PASSWORD=your-db-password \
+  -e DB_NAME=your-db-name \
+  -e JWT_SECRET=your-production-secret \
+  go-api:latest
+```
+
+**Using docker-compose for production:**
+```yaml
+version: '3.8'
+
+services:
+  app:
+    image: go-api:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+```
+
+### Option 2: Native Binary Deployment
+
+**Build for production:**
+```bash
+# Build optimized binary
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+  -a -installsuffix cgo \
+  -ldflags="-w -s" \
+  -o bin/server \
+  ./cmd/server
+
+# Binary is now in bin/server
+```
+
+**Deploy binary:**
+```bash
+# 1. Copy binary to server
+scp bin/server user@your-server:/opt/go-api/
+
+# 2. Copy .env file (with production values)
+scp .env user@your-server:/opt/go-api/
+
+# 3. SSH to server and run
+ssh user@your-server
+cd /opt/go-api
+./server
+```
+
+**Using systemd service:**
+
+Create `/etc/systemd/system/go-api.service`:
+```ini
+[Unit]
+Description=Go REST API Service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=go-api
+WorkingDirectory=/opt/go-api
+EnvironmentFile=/opt/go-api/.env
+ExecStart=/opt/go-api/server
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+```bash
+sudo systemctl enable go-api
+sudo systemctl start go-api
+sudo systemctl status go-api
+```
+
+### Production Checklist
+
+!!! warning "Security Checklist"
+    - [ ] Change `JWT_SECRET` to a strong, random value (min 32 characters)
+    - [ ] Use strong database passwords
+    - [ ] Enable HTTPS/TLS (use reverse proxy like Nginx)
+    - [ ] Configure proper CORS origins (not `*`)
+    - [ ] Set up rate limiting
+    - [ ] Enable database connection encryption
+    - [ ] Regular dependency updates
+    - [ ] Set up monitoring and logging
+    - [ ] Configure firewall rules
+    - [ ] Use environment variables (never hardcode secrets)
+    - [ ] Set up automated backups
+    - [ ] Configure log rotation
+
+### Reverse Proxy (Nginx)
+
+Example Nginx configuration:
+
+```nginx
+server {
+    listen 80;
+    server_name api.yourdomain.com;
+
+    # Redirect to HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name api.yourdomain.com;
+
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+---
+
+## 🔧 Troubleshooting
+
+### Docker Issues
+
+**Containers not starting:**
+```bash
+# Check logs
+make logs
+
+# Rebuild containers
+make rebuild
+```
+
+**Port already in use:**
+```bash
+# Check what's using port 8080
+lsof -i :8080
+
+# Kill the process or change port in docker-compose.yml
+```
+
+**Database connection refused:**
+```bash
+# Ensure database container is running
+docker ps | grep go_api_db
+
+# Check database logs
+docker logs go_api_db
+```
+
+### Manual Setup Issues
+
+**Go tools not found:**
+```bash
+# Ensure GOPATH/bin is in your PATH
+export PATH=$PATH:$(go env GOPATH)/bin
+
+# Add to ~/.bashrc or ~/.zshrc for persistence
+echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
+```
+
+**Database connection failed:**
+```bash
+# Test PostgreSQL connection
+psql -h localhost -U go_api_user -d go_api_db
+
+# Check PostgreSQL is running
+# macOS:
+brew services list | grep postgresql
+
+# Linux:
+sudo systemctl status postgresql
+```
+
+**Swagger docs not found:**
+```bash
+# Regenerate Swagger docs
+swag init -g cmd/server/main.go -o ./docs/swagger
+
+# Ensure docs/swagger directory exists
+ls -la docs/swagger
+```
+
+---
+
+## 📚 Next Steps
+
+- **[Development Guide](DEVELOPMENT_GUIDE.md)** - Learn how to build features
+- **[Docker Guide](DOCKER.md)** - Deep dive into Docker setup
+- **[Quick Reference](QUICK_REFERENCE.md)** - Command cheat sheet
+- **[TODO Example](TODO_EXAMPLE.md)** - Step-by-step tutorial
