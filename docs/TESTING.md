@@ -111,11 +111,6 @@ func TestValidateEmail(t *testing.T) {
 
 #### User Management Tests
 
-**TestListUsers**
-- ✅ List users with authentication
-- ✅ Unauthorized access (no token)
-- ✅ Invalid token handling
-
 **TestGetUser**
 - ✅ Get user by ID with authentication
 - ✅ Get non-existent user (404)
@@ -336,7 +331,7 @@ func TestProtectedEndpoint(t *testing.T) {
     token := getAuthToken(t, db)
     
     // Make authenticated request
-    req := httptest.NewRequest("GET", "/api/v1/users", nil)
+    req := httptest.NewRequest("GET", "/api/v1/users/1", nil)
     req.Header.Set("Authorization", "Bearer "+token)
     w := httptest.NewRecorder()
     

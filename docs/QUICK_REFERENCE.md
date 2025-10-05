@@ -218,9 +218,6 @@ Body: {"email": "string", "password": "string"}
 
 ### Users (Protected - Requires Bearer Token)
 ```bash
-# List users
-GET /api/v1/users?page=1&size=10
-
 # Get user by ID
 GET /api/v1/users/:id
 
@@ -282,16 +279,10 @@ curl -i -X POST http://localhost:8080/api/v1/auth/login \
   }'
 ```
 
-#### List Users (Protected)
+#### Get User by ID
 ```bash
 TOKEN="your-jwt-token-here"
 
-curl -i -X GET http://localhost:8080/api/v1/users \
-  -H "Authorization: Bearer $TOKEN"
-```
-
-#### Get User by ID
-```bash
 curl -i -X GET http://localhost:8080/api/v1/users/1 \
   -H "Authorization: Bearer $TOKEN"
 ```
