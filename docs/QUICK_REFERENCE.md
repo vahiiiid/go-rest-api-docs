@@ -458,21 +458,21 @@ go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s" -o bin/server ./cmd/server
 
 # Build Docker image
-docker build -t go-rest-api-boilerplate:v1.0.0 .
+docker build -t go-rest-api-boilerplate:v1.1.0 .
 
 # Run container
-docker run -p 8080:8080 --env-file .env go-rest-api-boilerplate:v1.0.0
+docker run -p 8080:8080 --env-file .env go-rest-api-boilerplate:v1.1.0
 ```
 
 ### Deploy to Cloud
 ```bash
 # Tag and push to registry
-docker tag go-rest-api-boilerplate:v1.0.0 your-registry/go-rest-api-boilerplate:v1.0.0
-docker push your-registry/go-rest-api-boilerplate:v1.0.0
+docker tag go-rest-api-boilerplate:v1.1.0 your-registry/go-rest-api-boilerplate:v1.1.0
+docker push your-registry/go-rest-api-boilerplate:v1.1.0
 
 # Pull and run on server
-docker pull your-registry/go-rest-api-boilerplate:v1.0.0
-docker run -d -p 8080:8080 --env-file .env your-registry/go-rest-api-boilerplate:v1.0.0
+docker pull your-registry/go-rest-api-boilerplate:v1.1.0
+docker run -d -p 8080:8080 --env-file .env your-registry/go-rest-api-boilerplate:v1.1.0
 ```
 
 ## 📚 Documentation URLs

@@ -136,5 +136,6 @@ nav:
   - Testing: TESTING.md
   - Infrastructure:
       - Docker Guide: DOCKER.md
+      - Logging & Monitoring: LOGGING.md
       - Swagger API Docs: SWAGGER.md
       - Documentation Setup: DOCS_SETUP.md

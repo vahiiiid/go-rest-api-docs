@@ -7,14 +7,14 @@
 <p><em>Grab it and Go &mdash; a clean, production-ready REST API starter kit in Go with JWT, PostgreSQL, Docker, and Swagger.</em></p>
 
 <p>
-<img src="https://img.shields.io/badge/version-1.0.0-blue.svg" alt="Version">
+<img src="https://img.shields.io/badge/version-1.1.0-blue.svg" alt="Version">
 <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
 <img src="https://img.shields.io/badge/Go-1.23+-00ADD8?logo=go" alt="Go Version">
 </p>
 
 <p>
 <a href="https://github.com/vahiiiid/go-rest-api-boilerplate">🚀 Main Repository</a> | 
-<a href="https://github.com/vahiiiid/go-rest-api-boilerplate/releases/tag/v1.0.0">📋 Changelog</a> | 
+<a href="https://github.com/vahiiiid/go-rest-api-boilerplate/releases/tag/v1.1.0">📋 Latest Release</a> | 
 <a href="https://github.com/vahiiiid/go-rest-api-boilerplate/issues">🐛 Report Issues</a>
 </p>
 
@@ -121,6 +121,14 @@ That's it. You get a fully configured, battle-tested REST API with:
   
     golangci-lint configured with best practices
 
+- :material-chart-line: **Structured Logging**
+  
+    JSON logging with request tracking, performance metrics, and environment-aware configuration
+
+- :material-cog: **Configuration Management**
+  
+    Environment-based configuration with YAML support and validation
+
 </div>
 
 ---
@@ -176,6 +184,8 @@ make quick-start
 - **Swagger UI:** http://localhost:8080/swagger/index.html
 - **Health Check:** http://localhost:8080/health
 
+**✨ New in v1.1.0:** Request logging is automatically enabled! Check the logs to see structured JSON output for each request.
+
 **➡️ [Full Setup Guide](SETUP.md)** for more options (manual setup, production deployment)
 
 ---
@@ -203,6 +213,10 @@ make quick-start
 - :material-docker: **[Docker Guide](DOCKER.md)**
   
     Container setup, hot-reload, and production deployment
+
+- :material-chart-line: **[Logging & Monitoring](LOGGING.md)**
+  
+    Structured logging, configuration, and production monitoring setup
 
 - :material-api: **[Swagger Guide](SWAGGER.md)**
   

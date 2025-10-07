@@ -647,9 +647,11 @@ go test -failfast ./...
 
 ## 📅 Testing Roadmap
 
-### v1.0.0 (Current)
+### v1.1.0 (Current)
 - ✅ Integration tests for all endpoints
 - ✅ Authentication flow tests
+- ✅ Request logging middleware tests
+- ✅ Configuration management tests
 - ✅ CRUD operation tests
 - ✅ Error handling tests
 

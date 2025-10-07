@@ -45,22 +45,31 @@ go-rest-api-boilerplate/
 ├── api/                   # API documentation
 │   ├── docs/             # Swagger docs (generated)
 │   └── postman_collection.json
+├── bin/                   # Compiled binaries (gitignored)
 ├── cmd/server/           # Application entry point
 ├── configs/              # Configuration files
+├── docs/                  # Documentation site (MkDocs)
+│   ├── docs/             # Documentation source files
+│   ├── site/             # Generated documentation site
+│   └── mkdocs.yml        # MkDocs configuration
 ├── internal/             # Private application code
 │   ├── auth/            # Authentication logic
+│   ├── config/          # Configuration management
 │   ├── db/              # Database connection
+│   ├── middleware/      # HTTP middleware
 │   ├── server/          # Router setup
 │   └── user/            # User domain
 ├── migrations/          # Database migrations info
 ├── scripts/             # Helper scripts
 ├── tests/               # Test files
+├── tmp/                 # Air hot-reload temp files (gitignored)
 ├── Dockerfile           # Multi-stage build
 ├── docker-compose.yml   # Container orchestration
+├── docker-compose.prod.yml # Production configuration
 ├── Makefile            # Build automation
 ├── README.md           # Main documentation
-├── SETUP.md            # Setup instructions
-└── CONTRIBUTING.md     # Contribution guidelines
+├── CONTRIBUTING.md     # Contribution guidelines
+└── server.log          # Application logs (gitignored)
 ```
 
 ## 🚀 Key Features

@@ -59,8 +59,17 @@ internal/
 │   ├── service.go         # Token generation/validation
 │   └── middleware.go      # Auth middleware for routes
 │
+├── config/                 # Configuration Management
+│   ├── config.go          # Config structs and loading logic
+│   └── config_test.go      # Configuration tests
+│
 ├── db/                     # Database Connection
 │   └── db.go              # PostgreSQL connection setup
+│
+├── middleware/             # HTTP Middleware
+│   ├── logger.go          # Request logging middleware
+│   ├── logger_test.go     # Logger middleware tests
+│   └── README.md          # Middleware documentation
 │
 ├── server/                 # Server & Routing
 │   └── router.go          # Route definitions
