@@ -126,7 +126,7 @@ make test
 # View test coverage
 make test-coverage
 
-# Generate/update Swagger docs
+# Generate/update Swagger docs (only needed for native development)
 make swag
 
 # Run database migrations
@@ -267,9 +267,11 @@ go mod download
 
 ### Step 8: Generate Swagger Documentation
 
+**Note**: If you're using Docker (recommended), Swagger docs are automatically generated during the Docker build process. You only need to run this step if you're running the application directly on your host machine.
+
 ```bash
-# Generate Swagger docs
-swag init -g cmd/server/main.go -o ./docs/swagger
+# Generate Swagger docs (only needed for native/local development)
+swag init -g cmd/server/main.go -o ./api/docs
 ```
 
 ### Step 9: Run Database Migrations
@@ -334,8 +336,8 @@ golangci-lint run
 # Fix linting issues
 golangci-lint run --fix
 
-# Update Swagger docs
-swag init -g cmd/server/main.go -o ./docs/swagger
+# Update Swagger docs (only needed for native development)
+swag init -g cmd/server/main.go -o ./api/docs
 
 # Create new migration
 migrate create -ext sql -dir migrations -seq your_migration_name

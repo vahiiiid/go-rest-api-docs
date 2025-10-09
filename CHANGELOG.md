@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Note**: This changelog tracks documentation changes. For API/code changes, see the [main repository changelog](https://github.com/vahiiiid/go-rest-api-boilerplate/blob/main/CHANGELOG.md).
 
+## [1.2.0] - 2025-01-15
+
+### Added
+- ✨ **Rate Limiting Documentation** - Comprehensive guide for the new rate limiting middleware
+  - Complete configuration guide with YAML and environment variables
+  - Token bucket algorithm explanation with examples
+  - HTTP headers documentation and response formats
+  - Implementation details and middleware integration
+  - Testing strategies and troubleshooting guide
+  - Best practices for production, development, and testing
+  - Advanced configuration options and security considerations
+  - Performance impact analysis and migration guide
+  - Location: `docs/RATE_LIMITING.md`
+  - Added to Infrastructure section in navigation
+
+---
+
 ## [1.0.0] - 2025-01-05
 
 ### 🎉 Initial Documentation Release
@@ -193,6 +210,7 @@ go-rest-api-docs/
 
 ## Version History
 
+- **1.2.0** (2025-01-15) - Rate limiting documentation
 - **1.0.0** (2025-01-05) - Initial documentation release
 
 ---
