@@ -130,6 +130,7 @@ nav:
   - Development:
       - Development Guide: DEVELOPMENT_GUIDE.md
       - Project Summary: PROJECT_SUMMARY.md
+      - Context Helpers: CONTEXT_HELPERS.md
       - Migrations Overview: MIGRATIONS_OVERVIEW.md
       - Migrations Guide: MIGRATIONS_GUIDE.md
   - Example: TODO_EXAMPLE.md
