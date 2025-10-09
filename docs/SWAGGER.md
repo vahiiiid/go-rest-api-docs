@@ -12,19 +12,28 @@ Interactive API documentation with "Try it out" feature available at `http://loc
 
 ## 🎯 Quick Start
 
-### Option 1: Using Make (Recommended)
+### Option 1: Docker (Automatic - Recommended)
+
+**Swagger docs are automatically generated during Docker build!** No manual steps needed when using Docker.
+
+```bash
+# Just start the containers - swagger docs are generated automatically
+docker-compose up --build
+```
+
+### Option 2: Using Make (For Native Development)
 
 ```bash
 make swag
 ```
 
-### Option 2: Using Script Directly
+### Option 3: Using Script Directly
 
 ```bash
 ./scripts/init-swagger.sh
 ```
 
-### Option 3: Manual
+### Option 4: Manual
 
 ```bash
 # Install swag CLI (first time only)
@@ -34,34 +43,40 @@ go install github.com/swaggo/swag/cmd/swag@latest
 swag init -g ./cmd/server/main.go -o ./api/docs
 ```
 
-## 📍 Where to Run
+## 📍 When to Generate Swagger Docs
 
-### ✅ On Your Host Machine (Local)
+### ✅ Docker Development (Automatic)
 
-**Recommended** - Run swagger generation on your local machine, not in Docker:
+**Swagger docs are automatically generated during Docker build!** The Dockerfile includes `RUN make swag` which generates the docs as part of the build process.
 
 ```bash
-# In your project directory
-cd /path/to/go-rest-api-boilerplate
+# Just start containers - docs are generated automatically
+docker-compose up --build
+```
 
-# Generate swagger docs
+**Benefits:**
+- No manual steps required
+- Docs are always up-to-date
+- Consistent across environments
+- Works out of the box
+
+### ✅ Native Development (Manual)
+
+**Only needed when running the application directly on your host machine:**
+
+```bash
+# Generate swagger docs for native development
 make swag
 ```
 
-**Why on host?**
-- Generated files are committed to git
-- No need to rebuild Docker container
-- Faster iteration
-- Works with your local Go installation
+**When to use:**
+- Running `go run cmd/server/main.go` directly
+- Building binary with `go build`
+- Not using Docker containers
 
-### ❌ Not in Docker Container
+## 🛠️ Setup (For Native Development Only)
 
-Don't run swagger generation inside the Docker container because:
-- Generated files would be lost when container stops (in dev mode with volumes)
-- Adds unnecessary complexity
-- Swagger docs are source code, should be generated locally
-
-## 🛠️ Setup (First Time)
+**Note**: If you're using Docker, Swagger docs are generated automatically. You only need this setup for native development.
 
 ### 1. Install Swag CLI
 
@@ -243,7 +258,9 @@ $HOME/go/bin/swag init -g ./cmd/server/main.go -o ./api/docs
 
 **Problem**: Server can't find generated swagger docs.
 
-**Solution**: Make sure you've run `make swag` before starting the server.
+**Solution**: 
+- **If using Docker**: Docs are generated automatically during build
+- **If running natively**: Make sure you've run `make swag` before starting the server
 
 ### Issue: "Failed to load API definition" / "Internal Server Error doc.json"
 
@@ -276,11 +293,16 @@ import (
 
 ### Issue: Swagger UI shows old data
 
-**Solution**: Regenerate docs and restart server
-```bash
-make swag
-docker-compose restart app
-```
+**Solution**: 
+- **If using Docker**: Rebuild containers to regenerate docs
+  ```bash
+  docker-compose up --build
+  ```
+- **If running natively**: Regenerate docs and restart server
+  ```bash
+  make swag
+  # Then restart your server
+  ```
 
 ### Issue: "Failed to parse annotations"
 

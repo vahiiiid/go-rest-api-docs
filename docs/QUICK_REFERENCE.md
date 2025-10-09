@@ -23,7 +23,7 @@ make run
 # Run tests
 make test
 
-# Generate Swagger docs
+# Generate Swagger docs (only needed for native development)
 make swag
 ```
 
@@ -82,7 +82,7 @@ make docker-down         # Stop docker-compose (development)
 make docker-down-prod    # Stop docker-compose (production)
 make test                # Run tests
 make test-coverage       # Run tests with coverage
-make swag                # Generate Swagger docs
+make swag                # Generate Swagger docs (native development only)
 make lint                # Run linter
 make lint-fix            # Run linter and auto-fix issues
 make clean               # Clean build artifacts
@@ -141,12 +141,15 @@ go test ./... -bench=.
 
 ### Swagger
 ```bash
-# Generate docs (recommended - installs swag if needed)
+# Docker: Swagger docs are generated automatically during build
+docker-compose up --build
+
+# Native development: Generate docs manually
 make swag
 # or
 ./scripts/init-swagger.sh
 
-# Manual generation
+# Manual generation (if needed)
 go install github.com/swaggo/swag/cmd/swag@latest
 swag init -g ./cmd/server/main.go -o ./api/docs
 

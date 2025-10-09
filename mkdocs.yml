@@ -138,5 +138,6 @@ nav:
   - Infrastructure:
       - Docker Guide: DOCKER.md
       - Logging & Monitoring: LOGGING.md
+      - Rate Limiting: RATE_LIMITING.md
       - Swagger API Docs: SWAGGER.md
       - Documentation Setup: DOCS_SETUP.md
