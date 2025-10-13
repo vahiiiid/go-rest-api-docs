@@ -175,7 +175,7 @@ Add migration step to your CI/CD or deployment process.
 
 ```dockerfile
 # Add to Dockerfile
-FROM golang:1.21-alpine AS builder
+FROM golang:1.24-alpine AS builder
 RUN apk add --no-cache git
 RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 ```

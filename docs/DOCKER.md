@@ -114,7 +114,7 @@ make docker-up-prod
 | Aspect | Development | Production |
 |--------|-------------|------------|
 | **Dockerfile Stage** | `development` | `production` |
-| **Base Image** | golang:1.21-alpine | alpine:latest |
+| **Base Image** | golang:1.24-alpine | alpine:latest |
 | **Code Location** | Volume mounted | Baked in image |
 | **Hot-Reload** | ✅ Yes (Air) | ❌ No |
 | **Image Size** | ~800MB | ~15MB |
@@ -365,7 +365,7 @@ docker-compose up
 
 This project uses **Air v1.52.3** (pinned version) instead of `@latest` because:
 - Air v1.63.0 has a bug requiring non-existent Go 1.25
-- v1.52.3 is stable and fully compatible with Go 1.23
+- v1.52.3 is stable and fully compatible with Go 1.24
 - All hot-reload features work perfectly
 
 When Air fixes the issue, you can update to `@latest` in the Dockerfile.

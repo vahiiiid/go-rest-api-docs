@@ -12,7 +12,7 @@ Complete setup instructions for the Go REST API Boilerplate (GRAB).
 - **Git** ([Download](https://git-scm.com/downloads))
 
 ### Required for Manual Setup
-- **Go 1.23+** ([Download](https://golang.org/dl/))
+- **Go 1.24+** ([Download](https://golang.org/dl/))
 - **PostgreSQL 15+** ([Download](https://www.postgresql.org/download/))
 - **Git** ([Download](https://git-scm.com/downloads))
 - **Make** (usually pre-installed on Unix systems)
@@ -139,7 +139,7 @@ make migrate-down
 ### Container Details
 
 **Development Container:**
-- Base: `golang:1.23-bookworm` (Debian for SQLite compatibility)
+- Base: `golang:1.24-bookworm` (Debian for SQLite compatibility)
 - Includes: `air`, `swag`, `golangci-lint`, `migrate`
 - Hot-reload: Changes detected in ~2 seconds
 - Volume: Code synced from host to container
@@ -171,13 +171,13 @@ For developers who prefer to run the application directly on their host machine.
 
 ### Step 1: Install Go
 
-Ensure you have **Go 1.23 or later** installed:
+Ensure you have **Go 1.24 or later** installed:
 
 ```bash
 # Check Go version
 go version
 
-# Should output: go version go1.23.x ...
+# Should output: go version go1.24.x ...
 ```
 
 If Go is not installed, download it from [https://golang.org/dl/](https://golang.org/dl/)

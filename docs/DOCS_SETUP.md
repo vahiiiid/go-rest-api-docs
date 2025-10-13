@@ -145,7 +145,7 @@ Use admonitions for tips, warnings, notes:
     Change JWT_SECRET before production!
 
 !!! note
-    This feature requires Go 1.23+
+    This feature requires Go 1.24+
 
 !!! danger
     This operation is irreversible!
