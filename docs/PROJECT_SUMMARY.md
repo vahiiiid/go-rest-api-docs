@@ -114,7 +114,7 @@ go-rest-api-boilerplate/
 
 ### CI/CD
 - **GitHub Actions** workflow
-- **Multi-version testing** (Go 1.20, 1.21)
+- **Multi-version testing** (Go 1.23, 1.24)
 - **Linting** with golangci-lint
 - **Automated tests** on push/PR
 - **Coverage reporting**
@@ -130,7 +130,7 @@ go-rest-api-boilerplate/
 
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
-| Language | Go 1.21 | Performance, simplicity, type safety |
+| Language | Go 1.24 | Performance, simplicity, type safety |
 | Web Framework | Gin | Fast HTTP router, middleware support |
 | ORM | GORM | Database abstraction, migrations |
 | Database | PostgreSQL 15 | Reliable, feature-rich RDBMS |
