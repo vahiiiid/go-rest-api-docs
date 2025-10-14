@@ -248,17 +248,31 @@ Changes are immediately reflected!
 
 ## 🔒 Environment Variables
 
+The application uses a **Viper-based configuration system** with updated environment variable names.
+
 ### Development
 
 Set in `docker-compose.yml` or use `.env` file:
 
 ```bash
-DB_HOST=db  # Docker service name
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=go_api
-JWT_SECRET=dev-secret
+# App Configuration
+APP_ENVIRONMENT=development
+APP_DEBUG=true
+
+# Database Configuration (updated variable names)
+DATABASE_HOST=db  # Docker service name
+DATABASE_PORT=5432
+DATABASE_USER=postgres
+DATABASE_PASSWORD=postgres
+DATABASE_NAME=grab
+DATABASE_SSLMODE=disable
+
+# JWT Configuration
+JWT_SECRET=dev-secret-for-development-only
+JWT_TTLHOURS=24
+
+# Server Configuration
+SERVER_PORT=8080
 ```
 
 ### Production
@@ -266,10 +280,30 @@ JWT_SECRET=dev-secret
 Set in `docker-compose.prod.yml` or use `.env` file:
 
 ```bash
-DB_HOST=db  # Docker service name
-JWT_SECRET=STRONG_PRODUCTION_SECRET
-DB_PASSWORD=STRONG_DB_PASSWORD
+# App Configuration
+APP_ENVIRONMENT=production
+APP_DEBUG=false
+
+# Database Configuration
+DATABASE_HOST=db  # Docker service name
+DATABASE_PASSWORD=STRONG_DB_PASSWORD
+DATABASE_SSLMODE=require
+
+# JWT Configuration (must be 32+ characters)
+JWT_SECRET=this-is-a-very-strong-production-jwt-secret-32-chars-minimum
+JWT_TTLHOURS=1
+
+# Rate Limiting (optional)
+RATELIMIT_ENABLED=true
+RATELIMIT_REQUESTS=60
+RATELIMIT_WINDOW=1m
 ```
+
+⚠️ **Important Changes:**
+- Variable names changed: `DB_*` → `DATABASE_*`
+- JWT secret must be 32+ characters in production
+- SSL mode enforced in production
+- See [Configuration Guide](CONFIGURATION.md) for complete reference
 
 ⚠️ **Never commit production secrets!**
 
@@ -297,8 +331,8 @@ docker-compose ps
 # Check DB logs
 docker-compose logs db
 
-# Verify DB_HOST=db in environment
-docker-compose exec app env | grep DB_HOST
+# Verify DATABASE_HOST=db in environment  
+docker-compose exec app env | grep DATABASE_HOST
 ```
 
 ### Permission Issues
