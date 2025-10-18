@@ -4,14 +4,14 @@ A comprehensive guide to understanding the codebase and building new features.
 
 ## 📑 Table of Contents
 
-- [Architecture Overview](#-architecture-overview)
-- [Configuration System](#-configuration-system)
-- [Directory Structure](#-directory-structure)
-- [Understanding the Layers](#-understanding-the-layers)
-- [How User Management Works](#-how-user-management-works)
-- [Adding New Features](#-adding-new-features)
-- [Best Practices](#-best-practices)
-- [Common Patterns](#-common-patterns)
+- [Architecture Overview](#architecture-overview)
+- [Configuration System](#configuration-system)
+- [Directory Structure](#directory-structure)
+- [Understanding the Layers](#understanding-the-layers)
+- [How User Management Works](#how-user-management-works)
+- [Adding New Features](#adding-new-features)
+- [Best Practices](#best-practices)
+- [Common Patterns](#common-patterns)
 
 ---
 
@@ -87,7 +87,7 @@ func main() {
 
     // Pass typed config to services
     authService := auth.NewService(&cfg.JWT)
-    db, err := db.NewPostgresDBFromDatabaseConfig(cfg.Database)
+    database, err := db.NewPostgresDBFromDatabaseConfig(cfg.Database)
     // ...
 }
 ```

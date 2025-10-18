@@ -258,9 +258,6 @@ cp .env.example .env
 
 # Edit with your values
 nano .env
-
-# Test configuration
-make config-check  # (if available)
 ```
 
 ### Verify Configuration
