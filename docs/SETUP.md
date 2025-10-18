@@ -240,6 +240,12 @@ go install github.com/air-verse/air@v1.52.3
 
 ### Step 6: Configure Environment
 
+The application uses a **layered configuration system** with Viper that supports:
+
+1. **Environment variables** (highest priority)
+2. **Environment-specific config files** (e.g., `config.development.yaml`)
+3. **Base config file** (`config.yaml`) (lowest priority)
+
 ```bash
 # Copy environment template
 cp .env.example .env
@@ -248,15 +254,40 @@ cp .env.example .env
 nano .env
 ```
 
-Update these values:
+Update these values using the **new environment variable names**:
 ```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=go_api_user
-DB_PASSWORD=your_password
-DB_NAME=go_api_db
+# App Configuration
+APP_NAME="GRAB API"
+APP_ENVIRONMENT=development
+APP_DEBUG=true
+
+# Database Configuration (updated variable names)
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_USER=go_api_user
+DATABASE_PASSWORD=your_password
+DATABASE_NAME=go_api_db
+DATABASE_SSLMODE=disable
+
+# JWT Configuration
 JWT_SECRET=your-secret-key-change-this-in-production
+JWT_TTLHOURS=24
+
+# Server Configuration  
+SERVER_PORT=8080
+SERVER_READTIMEOUT=10
+SERVER_WRITETIMEOUT=10
+
+# Logging Configuration
+LOGGING_LEVEL=info
+
+# Rate Limiting Configuration
+RATELIMIT_ENABLED=false
+RATELIMIT_REQUESTS=100
+RATELIMIT_WINDOW=1m
 ```
+
+**Note**: The variable names have changed from the old format (e.g., `DB_HOST` → `DATABASE_HOST`). See the [Configuration Guide](CONFIGURATION.md) for complete details on all available settings and precedence rules.
 
 ### Step 7: Install Dependencies
 

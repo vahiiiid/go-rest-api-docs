@@ -2,7 +2,6 @@
 
 Official documentation repository for the [Go REST API Boilerplate (GRAB)](https://github.com/vahiiiid/go-rest-api-boilerplate) project.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/vahiiiid/go-rest-api-docs/releases/tag/v1.0.0)
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://vahiiiid.github.io/go-rest-api-docs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

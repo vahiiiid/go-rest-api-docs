@@ -314,6 +314,8 @@ curl -i http://localhost:8080/health
 
 ## 🔧 Environment Variables
 
+**New Viper-based configuration system with updated variable names:**
+
 ```bash
 # Copy template
 cp .env.example .env
@@ -321,17 +323,25 @@ cp .env.example .env
 # Edit values
 vim .env
 
-# Required variables
-PORT=8080
-DB_HOST=db
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=go_api
+# Required variables (updated names)
+APP_ENVIRONMENT=development
+DATABASE_HOST=db
+DATABASE_PORT=5432
+DATABASE_USER=postgres
+DATABASE_PASSWORD=postgres
+DATABASE_NAME=grab
 JWT_SECRET=your-secret-here
-JWT_TTL_HOURS=24
-ENV=development
+JWT_TTLHOURS=24
+SERVER_PORT=8080
 ```
+
+**📝 Variable Changes:**
+- `DB_*` → `DATABASE_*` (e.g., `DB_HOST` → `DATABASE_HOST`)
+- `PORT` → `SERVER_PORT`
+- `ENV` → `APP_ENVIRONMENT`
+- `JWT_TTL_HOURS` → `JWT_TTLHOURS`
+
+**🔗 Complete reference:** [Configuration Guide](CONFIGURATION.md)
 
 ## 🐛 Troubleshooting
 
@@ -343,8 +353,8 @@ lsof -ti:8080
 # Kill process
 lsof -ti:8080 | xargs kill -9
 
-# Or use different port
-export PORT=8081
+# Or use different port (updated variable name)
+export SERVER_PORT=8081
 ```
 
 ### Database Connection Failed
@@ -463,7 +473,7 @@ CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags="-w -s" -o bin/
 # Build Docker image
 docker build -t go-rest-api-boilerplate:v1.1.0 .
 
-# Run container
+# Run container (with updated environment variables)
 docker run -p 8080:8080 --env-file .env go-rest-api-boilerplate:v1.1.0
 ```
 
@@ -473,7 +483,7 @@ docker run -p 8080:8080 --env-file .env go-rest-api-boilerplate:v1.1.0
 docker tag go-rest-api-boilerplate:v1.1.0 your-registry/go-rest-api-boilerplate:v1.1.0
 docker push your-registry/go-rest-api-boilerplate:v1.1.0
 
-# Pull and run on server
+# Pull and run on server (ensure .env has updated variable names)
 docker pull your-registry/go-rest-api-boilerplate:v1.1.0
 docker run -d -p 8080:8080 --env-file .env your-registry/go-rest-api-boilerplate:v1.1.0
 ```

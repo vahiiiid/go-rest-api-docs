@@ -4,13 +4,14 @@ A comprehensive guide to understanding the codebase and building new features.
 
 ## 📑 Table of Contents
 
-- [Architecture Overview](#-architecture-overview)
-- [Directory Structure](#-directory-structure)
-- [Understanding the Layers](#-understanding-the-layers)
-- [How User Management Works](#-how-user-management-works)
-- [Adding New Features](#-adding-new-features)
-- [Best Practices](#-best-practices)
-- [Common Patterns](#-common-patterns)
+- [Architecture Overview](#architecture-overview)
+- [Configuration System](#configuration-system)
+- [Directory Structure](#directory-structure)
+- [Understanding the Layers](#understanding-the-layers)
+- [How User Management Works](#how-user-management-works)
+- [Adding New Features](#adding-new-features)
+- [Best Practices](#best-practices)
+- [Common Patterns](#common-patterns)
 
 ---
 
@@ -50,6 +51,108 @@ This project follows **Clean Architecture** principles with clear separation of 
 
 ---
 
+## ⚙️ Configuration System
+
+The application uses a **Viper-based configuration system** with layered precedence for flexibility and security.
+
+### Configuration Architecture
+
+```text
+Environment Variables (.env)          <-- Highest Priority
+        ↓ (overrides)
+Environment Config (config.{env}.yaml)
+        ↓ (overrides)  
+Base Config (config.yaml)
+        ↓ (overrides)
+Default Values (hardcoded)            <-- Lowest Priority
+```
+
+### Using Configuration in Code
+
+**Step 1: Load configuration in main.go**
+
+```go
+package main
+
+import (
+    "github.com/vahiiiid/go-rest-api-boilerplate/internal/config"
+)
+
+func main() {
+    // Load configuration using Viper
+    cfg, err := config.LoadConfig("") // Auto-detects environment
+    if err != nil {
+        log.Fatalf("Failed to load config: %v", err)
+    }
+
+    // Pass typed config to services
+    authService := auth.NewService(&cfg.JWT)
+    database, err := db.NewPostgresDBFromDatabaseConfig(cfg.Database)
+    // ...
+}
+```
+
+**Step 2: Inject configuration into services**
+
+```go
+// Before (manual env reads)
+func NewService() Service {
+    secret := os.Getenv("JWT_SECRET") // ❌ Direct env access
+    // ...
+}
+
+// After (typed config injection)
+func NewService(cfg *config.JWTConfig) Service {
+    secret := cfg.Secret // ✅ Type-safe access
+    ttl := time.Duration(cfg.TTLHours) * time.Hour
+    // ...
+}
+```
+
+### Configuration Validation
+
+The config system includes automatic validation:
+
+```go
+// Production validations automatically applied
+func (c *Config) Validate() error {
+    if c.JWT.Secret == "" {
+        return fmt.Errorf("JWT secret is required")
+    }
+    
+    if c.App.Environment == "production" {
+        if len(c.JWT.Secret) < 32 {
+            return fmt.Errorf("JWT secret must be 32+ chars in production")
+        }
+        if c.Database.SSLMode == "disable" {
+            return fmt.Errorf("SSL required in production")
+        }
+    }
+    return nil
+}
+```
+
+### Testing Configuration
+
+Use the test helper for consistent test configs:
+
+```go
+func TestUserService(t *testing.T) {
+    // Get pre-configured test config
+    cfg := config.NewTestConfig()
+    
+    // Override specific values if needed
+    cfg.JWT.TTLHours = 1
+    
+    service := NewService(&cfg.JWT)
+    // ... test with consistent config
+}
+```
+
+**📖 Complete configuration reference:** [Configuration Guide](CONFIGURATION.md)
+
+---
+
 ## 📁 Directory Structure
 
 ```
@@ -59,9 +162,11 @@ internal/
 │   ├── service.go         # Token generation/validation
 │   └── middleware.go      # Auth middleware for routes
 │
-├── config/                 # Configuration Management
-│   ├── config.go          # Config structs and loading logic
-│   └── config_test.go      # Configuration tests
+├── config/                 # Configuration Management (Viper-based)
+│   ├── config.go          # Config structs, Viper loading, and validation
+│   ├── config_test.go     # Comprehensive configuration tests
+│   ├── testing.go         # Test configuration helper
+│   └── validator.go       # Configuration validation rules
 │
 ├── db/                     # Database Connection
 │   └── db.go              # PostgreSQL connection setup

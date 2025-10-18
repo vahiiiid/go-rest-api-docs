@@ -126,6 +126,7 @@ nav:
   - Home: index.md
   - Getting Started:
       - Setup Guide: SETUP.md
+      - Configuration Guide: CONFIGURATION.md
       - Quick Reference: QUICK_REFERENCE.md
   - Development:
       - Development Guide: DEVELOPMENT_GUIDE.md
