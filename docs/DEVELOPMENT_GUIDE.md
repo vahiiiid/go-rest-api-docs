@@ -59,39 +59,9 @@ The application uses a **Viper-based configuration system** with layered precede
 
 ```text
 Environment Variables (.env)          <-- Highest Priority
-        ↓ (overrides)
-Environment Config (config.{env}.yaml)
-        ↓ (overrides)  
-Base Config (config.yaml)
-        ↓ (overrides)
-Default Values (hardcoded)            <-- Lowest Priority
-```
+        ## 📁 Directory Structure
 
-### Using Configuration in Code
-
-**Step 1: Load configuration in main.go**
-
-```go
-package main
-
-import (
-    "github.com/vahiiiid/go-rest-api-boilerplate/internal/config"
-)
-
-func main() {
-    // Load configuration using Viper
-    cfg, err := config.LoadConfig("") // Auto-detects environment
-    if err != nil {
-        log.Fatalf("Failed to load config: %v", err)
-    }
-
-    // Pass typed config to services
-    authService := auth.NewService(&cfg.JWT)
-    database, err := db.NewPostgresDBFromDatabaseConfig(cfg.Database)
-    // ...
-}
-```
-
+        ```
 **Step 2: Inject configuration into services**
 
 ```go
@@ -187,15 +157,37 @@ internal/
     └── handler.go         # HTTP handlers
 ```
 
+
 ### File Responsibilities
 
-| File | Purpose | Contains |
-|------|---------|----------|
-| `model.go` | Database schema | GORM models with tags |
-| `dto.go` | Data transfer | Request/Response structs |
-| `repository.go` | Data access | CRUD operations |
-| `service.go` | Business logic | Validation, orchestration |
-| `handler.go` | HTTP layer | Route handlers, Swagger docs |
+| File/Folder | Purpose |
+|-------------|---------|
+| `.github/` | GitHub workflows, issue templates, PR templates |
+| `api/` | API documentation (Swagger, Postman) |
+| `cmd/` | Application entry points (server, migrate) |
+| `configs/` | YAML configuration files for all environments |
+| `internal/` | Main application code (private) |
+| `internal/auth/` | Authentication logic (JWT, middleware) |
+| `internal/config/` | Configuration management and validation |
+| `internal/ctx/` | Context helpers/utilities |
+| `internal/db/` | Database connection and setup |
+| `internal/middleware/` | HTTP middleware (logging, rate limiting) |
+| `internal/migrate/` | Migration logic and status checks |
+| `internal/server/` | Router and server setup |
+| `internal/user/` | User domain (handlers, services, repository) |
+| `migrations/` | Versioned SQL migration files |
+| `scripts/` | Helper shell scripts (entrypoints, quick-start) |
+| `tests/` | Integration and utility tests |
+| `tmp/` | Temp files (e.g., Air hot-reload, gitignored) |
+| `Dockerfile` | Multi-stage Docker build |
+| `docker-compose.yml` | Docker Compose (development) |
+| `docker-compose.prod.yml` | Docker Compose (production) |
+| `Makefile` | Build and workflow automation |
+| `README.md` | Main project overview |
+| `CONTRIBUTING.md` | Contribution guidelines |
+| `SECURITY.md` | Security policy |
+| `LICENSE` | Project license |
+| ... | Other root files (changelog, codecov, etc.) |
 
 ---
 
