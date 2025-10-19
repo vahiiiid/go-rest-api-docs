@@ -28,8 +28,7 @@
 
 ### The Problem We Solve
 
-When starting a new Go REST API project, you typically spend days:
-- 🔧 Setting up project structure and deciding on architecture
+- 🔧 Setting up project structure and deciding on architecture ([see current structure](PROJECT_SUMMARY.md#project-structure))
 - 🔐 Implementing authentication and security
 - 🐳 Configuring Docker, hot-reload, and development environment
 - 📚 Setting up API documentation and testing tools
@@ -108,6 +107,8 @@ That's it. You get a fully configured, battle-tested REST API with:
 - :material-layers: **Clean Architecture**
   
     Layered, maintainable structure (Handler → Service → Repository)
+    
+    📁 **Directory Structure**: See the [Project Summary](PROJECT_SUMMARY.md#project-structure) for a high-level overview of the current layout and main directories.
 
 - :material-security: **Security Best Practices**
   
@@ -264,7 +265,7 @@ GRAB follows **clean architecture** principles with clear separation of concerns
 - ✅ **Separation of Concerns** - Each layer has a single responsibility
 - ✅ **Dependency Injection** - Loose coupling between layers
 - ✅ **Testability** - Easy to mock and test each layer
-- ✅ **Maintainability** - Clear structure, easy to navigate
+- ✅ **Maintainability** - Clear structure, easy to navigate ([see structure](PROJECT_SUMMARY.md#project-structure))
 - ✅ **Scalability** - Easy to extend with new features
 
 ---

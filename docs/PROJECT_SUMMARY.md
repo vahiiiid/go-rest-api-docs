@@ -37,39 +37,38 @@ This is a **production-ready, REST API boilerplate** written in Go. It demonstra
 - DTOs for request/response
 - Middleware pattern for cross-cutting concerns
 
+
 ## 📁 Project Structure
 
 ```
 go-rest-api-boilerplate/
-├── .github/workflows/     # CI/CD pipelines
-├── api/                   # API documentation
-│   ├── docs/             # Swagger docs (generated)
-│   └── postman_collection.json
-├── bin/                   # Compiled binaries (gitignored)
-├── cmd/server/           # Application entry point
-├── configs/              # Configuration files
-├── docs/                  # Documentation site (MkDocs)
-│   ├── docs/             # Documentation source files
-│   ├── site/             # Generated documentation site
-│   └── mkdocs.yml        # MkDocs configuration
-├── internal/             # Private application code
-│   ├── auth/            # Authentication logic
-│   ├── config/          # Configuration management
-│   ├── db/              # Database connection
-│   ├── middleware/      # HTTP middleware
-│   ├── server/          # Router setup
-│   └── user/            # User domain
-├── migrations/          # Database migrations info
-├── scripts/             # Helper scripts
-├── tests/               # Test files
-├── tmp/                 # Air hot-reload temp files (gitignored)
-├── Dockerfile           # Multi-stage build
-├── docker-compose.yml   # Container orchestration
-├── docker-compose.prod.yml # Production configuration
-├── Makefile            # Build automation
-├── README.md           # Main documentation
-├── CONTRIBUTING.md     # Contribution guidelines
-└── server.log          # Application logs (gitignored)
+├── .github/              # GitHub workflows, issue templates, PR templates
+├── api/                  # API documentation (Swagger, Postman)
+│   └── docs/             # Generated Swagger docs
+├── cmd/                  # Application entry points (server, migrate)
+├── configs/              # YAML configuration files for all environments
+├── internal/             # Main application code (private)
+│   ├── auth/             # Authentication logic (JWT, middleware)
+│   ├── config/           # Configuration management and validation
+│   ├── ctx/              # Context helpers/utilities
+│   ├── db/               # Database connection and setup
+│   ├── middleware/       # HTTP middleware (logging, rate limiting)
+│   ├── migrate/          # Migration logic and status checks
+│   ├── server/           # Router and server setup
+│   └── user/             # User domain (handlers, services, repository)
+├── migrations/           # Versioned SQL migration files
+├── scripts/              # Helper shell scripts (entrypoints, quick-start)
+├── tests/                # Integration and utility tests
+├── tmp/                  # Temp files (e.g., Air hot-reload, gitignored)
+├── Dockerfile            # Multi-stage Docker build
+├── docker-compose.yml    # Docker Compose (development)
+├── docker-compose.prod.yml # Docker Compose (production)
+├── Makefile              # Build and workflow automation
+├── README.md             # Main project overview
+├── CONTRIBUTING.md       # Contribution guidelines
+├── SECURITY.md           # Security policy
+├── LICENSE               # Project license
+└── ...                   # Other root files (changelog, codecov, etc.)
 ```
 
 ## 🚀 Key Features

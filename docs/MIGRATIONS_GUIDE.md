@@ -1,80 +1,124 @@
+
 # Database Migrations Guide
 
-This directory contains SQL migration files for managing database schema changes.
+This guide explains how to manage database schema changes in GRAB using versioned SQL migrations and the built-in migration logic.
 
 ## Current Status
 
-**Current Approach**: The application uses **GORM AutoMigrate** which automatically creates/updates tables on startup. This is fine for development but **not recommended for production**.
 
-**Migration Files Available**:
-- ✅ `000001_create_users_table.up.sql` - Creates users table with indexes
-- ✅ `000001_create_users_table.down.sql` - Rollback (drops users table)
+**Development:**
 
-## Using Migrations in Production
+- The application uses **GORM AutoMigrate** for rapid prototyping and development. This automatically creates/updates tables on startup.
 
-For production, we **strongly recommend** using a migration tool instead of AutoMigrate. Here are three popular options:
+
+**Production:**
+
+- For production, **AutoMigrate is NOT recommended**. Use versioned SQL migrations and a migration tool for safety, auditability, and rollback support.
+
+
+**Migration Files Example:**
+
+- `000001_create_users_table.up.sql` – Creates users table with indexes
+- `000001_create_users_table.down.sql` – Drops users table
+### Running Migrations
+
+- Migrations are automatically run as part of the `make quick-start` and `make migrate-up` commands.
+- Rollbacks can be performed with `make migrate-down`.
+- Migration status and error handling are now robust: errors during migration status checks are logged and surfaced.
+- Migration logic is covered by automated tests (see `internal/migrate/migrate_test.go`).
+
+### Best Practices
+
+- Always use versioned SQL migrations in production.
+- Test both up and down migrations before deploying.
+- Use the provided Makefile commands for consistent workflow.
 
 ---
 
-## Option 1: golang-migrate (Recommended)
+## Migration Workflow in GRAB
 
-### Install
+### Running Migrations
+
+- Migrations are automatically run as part of the `make quick-start` and `make migrate-up` commands.
+- Rollbacks can be performed with `make migrate-down`.
+- Migration status and error handling are now robust: errors during migration status checks are logged and surfaced.
+- Migration logic is covered by automated tests (see `internal/migrate/migrate_test.go`).
+
+### Best Practices
+
+- Always use versioned SQL migrations in production.
+- Test both up and down migrations before deploying.
+- Use the provided Makefile commands for consistent workflow.
+
+---
+
+
+## Using Migration Tools
+
+For advanced scenarios or custom workflows, you can use external migration tools. Here are three popular options:
+
+### Option 1: golang-migrate (Recommended)
+
+
+Install:
+
 ```bash
-# macOS
 brew install golang-migrate
-
 # Or using Go
 go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 ```
 
-### Run Migrations
+Run migrations:
+
 ```bash
-# Apply all migrations
 migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/go_api?sslmode=disable" up
-
-# Rollback last migration
 migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/go_api?sslmode=disable" down 1
-
-# Check current version
 migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/go_api?sslmode=disable" version
-
-# Force to specific version (use with caution)
 migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/go_api?sslmode=disable" force 1
 ```
 
-### Create New Migration
+Create new migration:
+
 ```bash
 migrate create -ext sql -dir migrations -seq add_user_avatar_column
 ```
 
-This creates:
-- `000002_add_user_avatar_column.up.sql`
-- `000002_add_user_avatar_column.down.sql`
+### Option 2: goose
 
----
 
-## Option 2: goose
+Install:
 
-### Install
 ```bash
 go install github.com/pressly/goose/v3/cmd/goose@latest
 ```
 
-### Run Migrations
+Run migrations:
+
 ```bash
-# Apply migrations
 goose -dir migrations postgres "user=postgres password=postgres dbname=go_api sslmode=disable" up
-
-# Rollback
 goose -dir migrations postgres "user=postgres password=postgres dbname=go_api sslmode=disable" down
-
-# Status
 goose -dir migrations postgres "user=postgres password=postgres dbname=go_api sslmode=disable" status
 ```
 
-### Create New Migration
+Create new migration:
+
 ```bash
 goose -dir migrations create add_user_avatar sql
+```
+
+### Option 3: Atlas
+
+
+Install:
+
+```bash
+curl -sSf https://atlasgo.sh | sh
+```
+
+Generate migration from schema:
+
+```bash
+atlas migrate diff --env local
 ```
 
 ---

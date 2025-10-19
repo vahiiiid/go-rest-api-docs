@@ -5,7 +5,7 @@ A cheat sheet for common tasks and commands.
 ## 🎯 Most Common Commands
 
 ```bash
-# Quick start (automated - installs tools, verifies, and starts)
+# Quick start (automated: install, verify, migrate, start)
 make quick-start
 
 # Install development tools (swag, golangci-lint, migrate, air)
@@ -15,7 +15,7 @@ make install-tools
 make verify
 
 # Start everything (Docker)
-docker-compose up --build
+make up
 
 # Run locally
 make run
@@ -28,6 +28,33 @@ make swag
 ```
 
 ## 📋 Full Command Reference
+
+### Make Commands
+```bash
+make help                # Show all available commands
+make quick-start         # Complete automated setup (install, verify, migrate, start)
+make install-tools       # Install dev tools (swag, lint, migrate, air)
+make verify              # Verify project setup and dependencies
+make up                  # Start Docker containers (dev)
+make down                # Stop Docker containers (dev)
+make run                 # Run application locally (host)
+make build               # Build binary to bin/server
+make docker-build        # Build Docker image
+make docker-up           # Start docker-compose (development with hot-reload)
+make docker-up-prod      # Start docker-compose (production)
+make docker-down         # Stop docker-compose (development)
+make docker-down-prod    # Stop docker-compose (production)
+make test                # Run tests
+make test-coverage       # Run tests with coverage
+make swag                # Generate Swagger docs (native development only)
+make lint                # Run linter
+make lint-fix            # Run linter and auto-fix issues
+make clean               # Clean build artifacts
+make deps                # Download dependencies
+make migrate-up          # Run database migrations (host)
+make migrate-down        # Rollback last migration (host)
+make migrate-status      # Show migration status (host)
+```
 
 ### Docker Commands
 

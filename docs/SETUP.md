@@ -27,6 +27,7 @@ The fastest way to get started is using Docker with our automated setup:
   <img src="https://vahiiiid.github.io/go-rest-api-docs/images/quick-start-light.gif" alt="Quick Start Demo" style="max-width: 100%; border: 1px solid #ddd; border-radius: 4px; margin: 20px 0;">
 </div>
 
+
 ### One-Command Setup ⚡
 
 ```bash
@@ -34,7 +35,7 @@ The fastest way to get started is using Docker with our automated setup:
 git clone https://github.com/vahiiiid/go-rest-api-boilerplate.git
 cd go-rest-api-boilerplate
 
-# 2. Run quick start
+# 2. Run quick start (installs tools, verifies, runs migrations, starts containers)
 make quick-start
 ```
 
@@ -44,6 +45,7 @@ make quick-start
 - **Swagger UI:** http://localhost:8080/swagger/index.html
 - **Health Check:** http://localhost:8080/health
 
+
 ### What Just Happened?
 
 The `quick-start` command automatically:
@@ -52,7 +54,7 @@ The `quick-start` command automatically:
 2. ✅ Created `.env` file from template
 3. ✅ Built Docker images with all development tools
 4. ✅ Started PostgreSQL and application containers
-5. ✅ Ran database migrations
+5. ✅ Ran database migrations (with robust error handling and status checks)
 6. ✅ Generated Swagger documentation
 
 ### Try It Out 🧪
@@ -129,11 +131,15 @@ make test-coverage
 # Generate/update Swagger docs (only needed for native development)
 make swag
 
-# Run database migrations
+
+# Run database migrations (host)
 make migrate-up
 
-# Rollback migrations
+# Rollback last migration (host)
 make migrate-down
+
+# Show migration status (host)
+make migrate-status
 ```
 
 ### Container Details
