@@ -38,9 +38,6 @@ This is a **production-ready, REST API boilerplate** written in Go. It demonstra
 - Middleware pattern for cross-cutting concerns
 
 
-## 📁 Project Structure
-
-```
 go-rest-api-boilerplate/
 ├── .github/              # GitHub workflows, issue templates, PR templates
 ├── api/                  # API documentation (Swagger, Postman)
@@ -69,7 +66,6 @@ go-rest-api-boilerplate/
 ├── SECURITY.md           # Security policy
 ├── LICENSE               # Project license
 └── ...                   # Other root files (changelog, codecov, etc.)
-```
 
 ## 🚀 Key Features
 
