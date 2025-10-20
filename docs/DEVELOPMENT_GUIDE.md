@@ -59,9 +59,39 @@ The application uses a **Viper-based configuration system** with layered precede
 
 ```text
 Environment Variables (.env)          <-- Highest Priority
-        ## 📁 Directory Structure
+        ↓ (overrides)
+Environment Config (config.{env}.yaml)
+        ↓ (overrides)  
+Base Config (config.yaml)
+        ↓ (overrides)
+Default Values (hardcoded)            <-- Lowest Priority
+```
 
-        ```
+### Using Configuration in Code
+
+**Step 1: Load configuration in main.go**
+
+```go
+package main
+
+import (
+    "github.com/vahiiiid/go-rest-api-boilerplate/internal/config"
+)
+
+func main() {
+    // Load configuration using Viper
+    cfg, err := config.LoadConfig("") // Auto-detects environment
+    if err != nil {
+        log.Fatalf("Failed to load config: %v", err)
+    }
+
+    // Pass typed config to services
+    authService := auth.NewService(&cfg.JWT)
+    database, err := db.NewPostgresDBFromDatabaseConfig(cfg.Database)
+    // ...
+}
+```
+
 **Step 2: Inject configuration into services**
 
 ```go
@@ -126,37 +156,35 @@ func TestUserService(t *testing.T) {
 ## 📁 Directory Structure
 
 ```
-internal/
-├── auth/                   # Authentication & Authorization
-│   ├── dto.go             # JWT Claims
-│   ├── service.go         # Token generation/validation
-│   └── middleware.go      # Auth middleware for routes
-│
-├── config/                 # Configuration Management (Viper-based)
-│   ├── config.go          # Config structs, Viper loading, and validation
-│   ├── config_test.go     # Comprehensive configuration tests
-│   ├── testing.go         # Test configuration helper
-│   └── validator.go       # Configuration validation rules
-│
-├── db/                     # Database Connection
-│   └── db.go              # PostgreSQL connection setup
-│
-├── middleware/             # HTTP Middleware
-│   ├── logger.go          # Request logging middleware
-│   ├── logger_test.go     # Logger middleware tests
-│   └── README.md          # Middleware documentation
-│
-├── server/                 # Server & Routing
-│   └── router.go          # Route definitions
-│
-└── user/                   # User Domain (Example Feature)
-    ├── model.go           # Database model (GORM)
-    ├── dto.go             # Request/Response objects
-    ├── repository.go      # Database operations
-    ├── service.go         # Business logic
-    └── handler.go         # HTTP handlers
+go-rest-api-boilerplate/
+├── .github/              # GitHub workflows, issue templates, PR templates
+├── api/                  # API documentation (Swagger, Postman)
+│   └── docs/             # Generated Swagger docs
+├── cmd/                  # Application entry points (server, migrate)
+├── configs/              # YAML configuration files for all environments
+├── internal/             # Main application code (private)
+│   ├── auth/             # Authentication logic (JWT, middleware)
+│   ├── config/           # Configuration management and validation
+│   ├── ctx/              # Context helpers/utilities
+│   ├── db/               # Database connection and setup
+│   ├── middleware/       # HTTP middleware (logging, rate limiting)
+│   ├── migrate/          # Migration logic and status checks
+│   ├── server/           # Router and server setup
+│   └── user/             # User domain (handlers, services, repository)
+├── migrations/           # Versioned SQL migration files
+├── scripts/              # Helper shell scripts (entrypoints, quick-start)
+├── tests/                # Integration and utility tests
+├── tmp/                  # Temp files (e.g., Air hot-reload, gitignored)
+├── Dockerfile            # Multi-stage Docker build
+├── docker-compose.yml    # Docker Compose (development)
+├── docker-compose.prod.yml # Docker Compose (production)
+├── Makefile              # Build and workflow automation
+├── README.md             # Main project overview
+├── CONTRIBUTING.md       # Contribution guidelines
+├── SECURITY.md           # Security policy
+├── LICENSE               # Project license
+└── ...                   # Other root files (changelog, codecov, etc.)
 ```
-
 
 ### File Responsibilities
 
