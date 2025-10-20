@@ -331,7 +331,6 @@ jobs:
 
 ## Need Help?
 
-- Check [migrations/README.md](README.md) for overview
 - See existing migrations for examples
 - Review PostgreSQL documentation
 - Open an issue on GitHub

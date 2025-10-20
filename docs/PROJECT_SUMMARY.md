@@ -38,35 +38,6 @@ This is a **production-ready, REST API boilerplate** written in Go. It demonstra
 - Middleware pattern for cross-cutting concerns
 
 
-go-rest-api-boilerplate/
-├── .github/              # GitHub workflows, issue templates, PR templates
-├── api/                  # API documentation (Swagger, Postman)
-│   └── docs/             # Generated Swagger docs
-├── cmd/                  # Application entry points (server, migrate)
-├── configs/              # YAML configuration files for all environments
-├── internal/             # Main application code (private)
-│   ├── auth/             # Authentication logic (JWT, middleware)
-│   ├── config/           # Configuration management and validation
-│   ├── ctx/              # Context helpers/utilities
-│   ├── db/               # Database connection and setup
-│   ├── middleware/       # HTTP middleware (logging, rate limiting)
-│   ├── migrate/          # Migration logic and status checks
-│   ├── server/           # Router and server setup
-│   └── user/             # User domain (handlers, services, repository)
-├── migrations/           # Versioned SQL migration files
-├── scripts/              # Helper shell scripts (entrypoints, quick-start)
-├── tests/                # Integration and utility tests
-├── tmp/                  # Temp files (e.g., Air hot-reload, gitignored)
-├── Dockerfile            # Multi-stage Docker build
-├── docker-compose.yml    # Docker Compose (development)
-├── docker-compose.prod.yml # Docker Compose (production)
-├── Makefile              # Build and workflow automation
-├── README.md             # Main project overview
-├── CONTRIBUTING.md       # Contribution guidelines
-├── SECURITY.md           # Security policy
-├── LICENSE               # Project license
-└── ...                   # Other root files (changelog, codecov, etc.)
-
 ## 🚀 Key Features
 
 ### Authentication & Security
@@ -261,7 +232,7 @@ After using this boilerplate, you should be able to:
 
 ## 🤝 Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+We welcome contributions! See [CONTRIBUTING.md](https://github.com/vahiiiid/go-rest-api-boilerplate/blob/main/CONTRIBUTING.md) for:
 - Code style guidelines
 - How to add features
 - Testing requirements
