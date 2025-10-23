@@ -56,6 +56,9 @@ server:
   port: "8080"                      # Server port
   readtimeout: 10                   # Read timeout in seconds
   writetimeout: 10                  # Write timeout in seconds
+  idletimeout: 120                  # Idle timeout in seconds
+  shutdowntimeout: 30               # Graceful shutdown timeout in seconds
+  maxheaderbytes: 1048576           # Max header bytes (1MB)
 
 logging:
   level: "info"                     # Log level: debug|info|warn|error
@@ -157,8 +160,11 @@ All configuration values can be overridden with environment variables using the 
 | Variable | Default | Description | Accepted Values |
 |----------|---------|-------------|-----------------|
 | `SERVER_PORT` | `"8080"` | Server port | `"1"` to `"65535"` |
-| `SERVER_READTIMEOUT` | `10` | Read timeout (seconds) | Positive integer |
-| `SERVER_WRITETIMEOUT` | `10` | Write timeout (seconds) | Positive integer |
+| `SERVER_READTIMEOUT` | `10` | Read timeout (seconds) | Non-negative integer |
+| `SERVER_WRITETIMEOUT` | `10` | Write timeout (seconds) | Non-negative integer |
+| `SERVER_IDLETIMEOUT` | `120` | Idle timeout (seconds) | Non-negative integer |
+| `SERVER_SHUTDOWNTIMEOUT` | `30` | Graceful shutdown timeout (seconds) | Non-negative integer |
+| `SERVER_MAXHEADERBYTES` | `1048576` | Max header bytes (1MB) | Non-negative integer |
 
 #### Logging Configuration
 
@@ -220,6 +226,9 @@ JWT_TTLHOURS=1
 SERVER_PORT=8080
 SERVER_READTIMEOUT=30
 SERVER_WRITETIMEOUT=30
+SERVER_IDLETIMEOUT=120
+SERVER_SHUTDOWNTIMEOUT=30
+SERVER_MAXHEADERBYTES=1048576
 
 # Logging
 LOGGING_LEVEL=warn
