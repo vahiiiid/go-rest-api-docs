@@ -78,7 +78,7 @@ That's it. You get a fully configured, battle-tested REST API with:
 
 - :material-rocket-launch: **Production Ready**
   
-    Optimized multi-stage Docker builds, minimal Alpine images
+    Optimized multi-stage Docker builds, minimal Alpine images, graceful shutdown
 
 - :material-api: **Swagger/OpenAPI**
   
