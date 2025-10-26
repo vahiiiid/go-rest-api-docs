@@ -1,341 +1,532 @@
-
 # Database Migrations Guide
 
-This guide explains how to manage database schema changes in GRAB using versioned SQL migrations and the built-in migration logic.
+Complete guide to managing database schema changes in GRAB using **golang-migrate** with industry-standard timestamp versioning.
 
-## Current Status
+## Overview
 
+GRAB uses **[golang-migrate/migrate](https://github.com/golang-migrate/migrate)** for production-grade database migrations with:
 
-**Development:**
+- ✅ **Timestamp versioning** (YYYYMMDDHHMMSS format) - prevents merge conflicts
+- ✅ **Up/Down migration pairs** - full rollback capability  
+- ✅ **Transaction support** - atomic schema changes
+- ✅ **Safety features** - confirmation prompts, dirty state detection
+- ✅ **Production-ready** - used by thousands of Go applications
 
-- The application uses **GORM AutoMigrate** for rapid prototyping and development. This automatically creates/updates tables on startup.
+## Quick Start
 
+### Create a New Migration
 
-**Production:**
+\`\`\`bash
+make migrate-create NAME=add_posts_table
+\`\`\`
 
-- For production, **AutoMigrate is NOT recommended**. Use versioned SQL migrations and a migration tool for safety, auditability, and rollback support.
+This creates two files with automatic timestamp:
 
+\`\`\`
+migrations/20251026143520_add_posts_table.up.sql
+migrations/20251026143520_add_posts_table.down.sql
+\`\`\`
 
-**Migration Files Example:**
+### Apply Migrations
 
-- `000001_create_users_table.up.sql` – Creates users table with indexes
-- `000001_create_users_table.down.sql` – Drops users table
-### Running Migrations
+\`\`\`bash
+make migrate-up          # Apply all pending migrations
+make migrate-status      # Check current version
+\`\`\`
 
-- Migrations are automatically run as part of the `make quick-start` and `make migrate-up` commands.
-- Rollbacks can be performed with `make migrate-down`.
-- Migration status and error handling are now robust: errors during migration status checks are logged and surfaced.
-- Migration logic is covered by automated tests (see `internal/migrate/migrate_test.go`).
+### Rollback Migrations
 
-### Best Practices
+\`\`\`bash
+make migrate-down              # Rollback last migration (safe default)
+make migrate-down STEPS=3      # Rollback 3 migrations
+\`\`\`
 
-- Always use versioned SQL migrations in production.
-- Test both up and down migrations before deploying.
-- Use the provided Makefile commands for consistent workflow.
+## Migration Commands Reference
 
----
+### Core Commands
 
-## Migration Workflow in GRAB
+| Command | Description | Example |
+|---------|-------------|---------|
+| \`make migrate-create NAME=<name>\` | Create new migration with timestamp | \`make migrate-create NAME=add_user_avatar\` |
+| \`make migrate-up\` | Apply all pending migrations | \`make migrate-up\` |
+| \`make migrate-down\` | Rollback last migration | \`make migrate-down\` |
+| \`make migrate-down STEPS=N\` | Rollback N migrations | \`make migrate-down STEPS=3\` |
+| \`make migrate-status\` | Show current migration version | \`make migrate-status\` |
+| \`make migrate-goto VERSION=<n>\` | Jump to specific version | \`make migrate-goto VERSION=20251026143520\` |
+| \`make migrate-force VERSION=<n>\` | Force set version (recovery) | \`make migrate-force VERSION=20251026143520\` |
+| \`make migrate-drop\` | Drop all tables (danger!) | \`make migrate-drop\` |
 
-### Running Migrations
+### Advanced Commands
 
-- Migrations are automatically run as part of the `make quick-start` and `make migrate-up` commands.
-- Rollbacks can be performed with `make migrate-down`.
-- Migration status and error handling are now robust: errors during migration status checks are logged and surfaced.
-- Migration logic is covered by automated tests (see `internal/migrate/migrate_test.go`).
+\`\`\`bash
+# Apply specific number of migrations
+docker compose exec app go run cmd/migrate/main.go up 2
 
-### Best Practices
+# Custom timeout for long-running migrations
+docker compose exec app go run cmd/migrate/main.go up --timeout=30m --lock-timeout=1m
 
-- Always use versioned SQL migrations in production.
-- Test both up and down migrations before deploying.
-- Use the provided Makefile commands for consistent workflow.
-
----
-
-
-## Using Migration Tools
-
-For advanced scenarios or custom workflows, you can use external migration tools. Here are three popular options:
-
-### Option 1: golang-migrate (Recommended)
-
-
-Install:
-
-```bash
-brew install golang-migrate
-# Or using Go
-go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-```
-
-Run migrations:
-
-```bash
-migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/go_api?sslmode=disable" up
-migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/go_api?sslmode=disable" down 1
-migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/go_api?sslmode=disable" version
-migrate -path migrations -database "postgres://postgres:postgres@localhost:5432/go_api?sslmode=disable" force 1
-```
-
-Create new migration:
-
-```bash
-migrate create -ext sql -dir migrations -seq add_user_avatar_column
-```
-
-### Option 2: goose
+# Skip confirmation prompts (use with caution)
+docker compose exec app go run cmd/migrate/main.go drop --force
+\`\`\`
 
 
-Install:
+## Real-World Examples
 
-```bash
-go install github.com/pressly/goose/v3/cmd/goose@latest
-```
+### Example 1: Creating a Posts Table
 
-Run migrations:
+**Create migration:**
 
-```bash
-goose -dir migrations postgres "user=postgres password=postgres dbname=go_api sslmode=disable" up
-goose -dir migrations postgres "user=postgres password=postgres dbname=go_api sslmode=disable" down
-goose -dir migrations postgres "user=postgres password=postgres dbname=go_api sslmode=disable" status
-```
+\`\`\`bash
+make migrate-create NAME=create_posts_table
+\`\`\`
 
-Create new migration:
+**Edit \`*_create_posts_table.up.sql\`:**
 
-```bash
-goose -dir migrations create add_user_avatar sql
-```
+\`\`\`sql
+-- Migration: create_posts_table
+-- Created: 2025-10-26T14:35:20Z
+-- Description: Create posts table with foreign key to users
 
-### Option 3: Atlas
+BEGIN;
 
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    user_id INTEGER NOT NULL,
+    status VARCHAR(20) DEFAULT 'draft',
+    published_at TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP,
+    
+    CONSTRAINT fk_posts_user FOREIGN KEY (user_id) 
+        REFERENCES users(id) ON DELETE CASCADE
+);
 
-Install:
+CREATE INDEX idx_posts_user_id ON posts(user_id);
+CREATE INDEX idx_posts_status ON posts(status);
+CREATE INDEX idx_posts_published_at ON posts(published_at);
+CREATE INDEX idx_posts_deleted_at ON posts(deleted_at);
 
-```bash
-curl -sSf https://atlasgo.sh | sh
-```
+COMMIT;
+\`\`\`
 
-Generate migration from schema:
+**Edit \`*_create_posts_table.down.sql\`:**
 
-```bash
-atlas migrate diff --env local
-```
+\`\`\`sql
+-- Migration: create_posts_table (rollback)
+-- Created: 2025-10-26T14:35:20Z
 
----
+BEGIN;
 
-## Option 3: Atlas
+DROP INDEX IF EXISTS idx_posts_deleted_at;
+DROP INDEX IF EXISTS idx_posts_published_at;
+DROP INDEX IF EXISTS idx_posts_status;
+DROP INDEX IF EXISTS idx_posts_user_id;
+DROP TABLE IF EXISTS posts CASCADE;
 
-### Install
-```bash
-curl -sSf https://atlasgo.sh | sh
-```
+COMMIT;
+\`\`\`
 
-### Usage
-```bash
-# Apply migrations
-atlas migrate apply --env local
+**Apply and test:**
 
-# Generate migration from models
-atlas migrate diff --env local
-```
+\`\`\`bash
+make migrate-up          # Apply migration
+make migrate-status      # Verify: version = 20251026143520
+make migrate-down        # Test rollback
+make migrate-status      # Verify: posts table gone
+make migrate-up          # Re-apply
+\`\`\`
 
----
+### Example 2: Adding a Column
 
-## Migration Naming Convention
+**Create migration:**
 
-We use sequential numbering with descriptive names:
+\`\`\`bash
+make migrate-create NAME=add_user_avatar
+\`\`\`
 
-```
-000001_create_users_table.up.sql
-000001_create_users_table.down.sql
-000002_add_user_avatar_column.up.sql
-000002_add_user_avatar_column.down.sql
-000003_create_posts_table.up.sql
-000003_create_posts_table.down.sql
-```
+**Edit \`*_add_user_avatar.up.sql\`:**
 
----
+\`\`\`sql
+-- Migration: add_user_avatar
+-- Created: 2025-10-26T15:22:10Z
+-- Description: Add avatar column to users table
 
-## Migration Best Practices
+BEGIN;
 
-### 1. Always Write Reversible Migrations
-Every `.up.sql` should have a corresponding `.down.sql` that reverses the changes.
+ALTER TABLE users 
+    ADD COLUMN IF NOT EXISTS avatar VARCHAR(255);
 
-### 2. Test Migrations
-```bash
+CREATE INDEX IF NOT EXISTS idx_users_avatar ON users(avatar) 
+    WHERE avatar IS NOT NULL;
+
+COMMENT ON COLUMN users.avatar IS 'URL to user profile avatar image';
+
+COMMIT;
+\`\`\`
+
+**Edit \`*_add_user_avatar.down.sql\`:**
+
+\`\`\`sql
+-- Migration: add_user_avatar (rollback)
+-- Created: 2025-10-26T15:22:10Z
+
+BEGIN;
+
+DROP INDEX IF EXISTS idx_users_avatar;
+ALTER TABLE users DROP COLUMN IF EXISTS avatar;
+
+COMMIT;
+\`\`\`
+
+## Migration Workflow Best Practices
+
+### 1. Development Workflow
+
+\`\`\`bash
+# Start development
+make up
+
+# Create migration
+make migrate-create NAME=add_feature_x
+
+# Edit migration files
+# Add SQL to *_add_feature_x.up.sql
+# Add rollback SQL to *_add_feature_x.down.sql
+
+# Apply migration
+make migrate-up
+
+# Verify it works
+make migrate-status
+
+# Test rollback
+make migrate-down
+
+# Re-apply for final verification
+make migrate-up
+
+# Run tests
+make test
+\`\`\`
+
+### 2. Testing Migrations
+
+**Test both directions:**
+
+\`\`\`bash
 # Test up
-migrate -path migrations -database "..." up
+make migrate-up
+make test
 
 # Test down
-migrate -path migrations -database "..." down 1
+make migrate-down
+make test
 
 # Test up again
-migrate -path migrations -database "..." up
-```
+make migrate-up
+make test
+\`\`\`
 
-### 3. Never Modify Existing Migrations
-Once a migration is committed and applied in any environment, **never modify it**. Create a new migration instead.
+### 3. Production Deployment
 
-### 4. Keep Migrations Small
-One logical change per migration. Don't combine unrelated changes.
+**Pre-deployment checklist:**
 
-### 5. Backup Before Production Migrations
-```bash
-# PostgreSQL backup
-pg_dump -U postgres go_api > backup_$(date +%Y%m%d_%H%M%S).sql
+- [ ] Migration tested locally (up and down)
+- [ ] Migration reviewed by team
+- [ ] Backward compatible with current application version
+- [ ] Database backup strategy confirmed
+- [ ] Rollback plan documented
 
-# Restore if needed
-psql -U postgres go_api < backup_20240101_120000.sql
-```
+**Deployment process:**
 
----
+\`\`\`bash
+# 1. Backup database
+docker compose exec db pg_dump -U postgres grab > backup_$(date +%Y%m%d_%H%M%S).sql
 
-## Switching from AutoMigrate to Migrations
+# 2. Check current version
+make migrate-status
 
-To switch from GORM AutoMigrate to proper migrations:
+# 3. Apply migrations
+make migrate-up
 
-### Step 1: Comment out AutoMigrate
-In `cmd/server/main.go`:
-```go
-// Comment this out:
-// if err := database.AutoMigrate(&user.User{}); err != nil {
-//     log.Fatalf("Failed to run migrations: %v", err)
-// }
-```
+# 4. Verify migration success
+make migrate-status
 
-### Step 2: Run migrations manually
-```bash
-migrate -path migrations -database "postgres://..." up
-```
+# 5. If something goes wrong, rollback
+make migrate-down STEPS=1
+\`\`\`
 
-### Step 3: Update deployment scripts
-Add migration step to your CI/CD or deployment process.
+## Migration Versioning System
 
----
+### Timestamp Format
 
-## Docker Integration
+GRAB uses **YYYYMMDDHHMMSS** format for migration versions:
 
-### Using golang-migrate in Docker
+\`\`\`
+20251026143520_create_posts_table.up.sql
+│││││││││││││││
+│││││││││││││└└─ Seconds (00-59)
+││││││││││└└─── Minutes (00-59)
+││││││││└└───── Hours (00-23)
+│││││└└─────── Day (01-31)
+│││└└────────── Month (01-12)
+└└───────────── Year (2025)
+\`\`\`
 
-```dockerfile
-# Add to Dockerfile
-FROM golang:1.24-alpine AS builder
-RUN apk add --no-cache git
-RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
-```
+### Why Timestamp Versioning?
 
-### docker-compose with migrations
+**Prevents merge conflicts:**
 
-```yaml
-services:
-  migrate:
-    image: migrate/migrate
-    volumes:
-      - ./migrations:/migrations
-    command: ["-path", "/migrations", "-database", "postgres://postgres:postgres@db:5432/go_api?sslmode=disable", "up"]
-    depends_on:
-      - db
-```
+\`\`\`bash
+# Sequential (problems):
+Developer A: 000001_add_posts.sql
+Developer B: 000001_add_comments.sql  # Conflict!
 
----
+# Timestamps (no conflicts):
+Developer A: 20251026140000_add_posts.sql
+Developer B: 20251026140500_add_comments.sql  # Works!
+\`\`\`
 
-## Common Issues & Solutions
+**Industry standard:**
 
-### Issue: "Dirty database version"
-```bash
-# This means a migration failed partway through
-# Check which version is dirty
-migrate -path migrations -database "..." version
+- ✅ Ruby on Rails uses timestamps
+- ✅ Django uses timestamps
+- ✅ Laravel uses timestamps
+- ✅ Alembic (Python) uses timestamps
 
-# Force to the correct version (after manually fixing the database)
-migrate -path migrations -database "..." force VERSION_NUMBER
-```
+## Rollback Behavior
 
-### Issue: "Migration already applied"
-This is normal. The tool tracks which migrations have been applied in a `schema_migrations` table.
+### Default Behavior (Safe)
 
-### Issue: "Connection refused"
-Make sure your database is running and credentials are correct.
+\`\`\`bash
+make migrate-down
+# ✅ Rolls back ONLY the last migration
+# ✅ Confirmation prompt required
+# ✅ Safe for production
+\`\`\`
 
----
+**Why roll back one migration at a time?**
 
-## Current Schema
+- **Safety:** Prevents accidental data loss
+- **Industry standard:** Matches Rails, Django, Alembic
+- **Controllable:** You verify each step
 
-Based on `internal/user/model.go`, the users table schema is:
+### Rolling Back Multiple Migrations
 
-```sql
-TABLE users
-├── id            SERIAL PRIMARY KEY
-├── name          VARCHAR(255) NOT NULL
-├── email         VARCHAR(255) UNIQUE NOT NULL
-├── password_hash VARCHAR(255) NOT NULL
-├── created_at    TIMESTAMP WITH TIME ZONE
-├── updated_at    TIMESTAMP WITH TIME ZONE
-└── deleted_at    TIMESTAMP WITH TIME ZONE
+\`\`\`bash
+# Rollback specific number
+make migrate-down STEPS=3
 
-INDEXES
-├── idx_users_email
-└── idx_users_deleted_at
-```
+# This will:
+# 1. Show warning: "This will rollback 3 migrations"
+# 2. Prompt for confirmation
+# 3. Roll back 3 migrations in order (newest first)
+\`\`\`
 
----
+### Rollback Comparison
 
-## Example: Adding a New Column
+| Framework | Default Rollback | Multiple Rollback |
+|-----------|------------------|-------------------|
+| **GRAB (golang-migrate)** | 1 migration | \`STEPS=N\` parameter |
+| **Rails** | 1 migration | \`STEP=N\` parameter |
+| **Django** | Must specify version | Migrate to version number |
+| **Laravel** | Last batch | \`--step=N\` option |
+| **Alembic** | \`-1\` (one down) | \`-N\` or \`base\` |
 
-### 000002_add_user_phone.up.sql
-```sql
-ALTER TABLE users 
-ADD COLUMN phone VARCHAR(20);
+## Recovery & Troubleshooting
 
-CREATE INDEX idx_users_phone ON users(phone);
-```
+### Dirty State Recovery
 
-### 000002_add_user_phone.down.sql
-```sql
-DROP INDEX IF EXISTS idx_users_phone;
+**What is dirty state?**
 
-ALTER TABLE users 
-DROP COLUMN IF EXISTS phone;
-```
+A migration failed partway through, leaving the database in an inconsistent state.
 
----
+**Check for dirty state:**
 
-## CI/CD Integration
+\`\`\`bash
+make migrate-status
+# Output: Status: ⚠️  DIRTY (migration failed or interrupted)
+\`\`\`
 
-### GitHub Actions Example
-```yaml
+**Recovery steps:**
+
+\`\`\`bash
+# 1. Check which version is dirty
+make migrate-status
+
+# 2. Manually fix the database
+docker compose exec db psql -U postgres -d grab
+# Fix issues manually in SQL
+
+# 3. Force set the version
+make migrate-force VERSION=20251026140000
+
+# 4. Verify clean state
+make migrate-status
+# Status: ✅ Clean
+\`\`\`
+
+### Common Issues
+
+#### Issue 1: "migration file does not exist"
+
+**Solution:**
+
+\`\`\`bash
+# Force reset to previous version
+make migrate-force VERSION=20251026135959
+\`\`\`
+
+#### Issue 2: "version is dirty"
+
+**Solution:**
+
+\`\`\`bash
+# 1. Check what failed
+docker compose exec db psql -U postgres -d grab
+
+# 2. Manually fix database issues
+
+# 3. Force clean state
+make migrate-force VERSION=20251026140000
+\`\`\`
+
+## Advanced Topics
+
+### Custom Migration Configuration
+
+**Override timeouts:**
+
+\`\`\`bash
+# Long-running migration
+docker compose exec app go run cmd/migrate/main.go up \
+    --timeout=1h \
+    --lock-timeout=10m
+\`\`\`
+
+**Configuration file:** \`configs/config.yaml\`
+
+\`\`\`yaml
+migrations:
+  directory: "./migrations"
+  timeout: 300          # 5 minutes default
+  lock_timeout: 30      # 30 seconds default
+\`\`\`
+
+### CI/CD Integration
+
+**GitHub Actions workflow:**
+
+\`\`\`yaml
+name: Migrations Test
+on: [push, pull_request]
+
 jobs:
-  migrate:
+  test-migrations:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v3
       
-      - name: Run migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.linux-amd64.tar.gz | tar xvz
-          ./migrate -path migrations -database "$DATABASE_URL" up
-```
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24'
+
+      - name: Run migrations up
+        run: make migrate-up
+
+      - name: Run tests
+        run: make test
+
+      - name: Test migrations down
+        run: echo "yes" | make migrate-down
+
+      - name: Run migrations up again
+        run: make migrate-up
+\`\`\`
+
+## Migration Testing Script
+
+GRAB includes a comprehensive migration test script:
+
+\`\`\`bash
+./scripts/test-migrations.sh
+\`\`\`
+
+**What it tests:**
+
+- ✅ Creating migrations with timestamp versioning
+- ✅ Applying all migrations (migrate-up)
+- ✅ Migration status checking
+- ✅ Rolling back single migration
+- ✅ Rolling back multiple migrations (STEPS parameter)
+- ✅ Goto specific version
+- ✅ Database schema tracking (schema_migrations table)
+- ✅ Industry best practices compliance
+
+## Migration Checklist
+
+### Before Creating Migration
+
+- [ ] Pulled latest changes from main branch
+- [ ] Reviewed existing migrations
+- [ ] Planned migration strategy (backward compatible?)
+
+### Writing Migration
+
+- [ ] Used \`make migrate-create NAME=descriptive_name\`
+- [ ] Both \`.up.sql\` and \`.down.sql\` files provided
+- [ ] SQL wrapped in \`BEGIN;\` / \`COMMIT;\` transaction
+- [ ] Used \`IF EXISTS\` / \`IF NOT EXISTS\` for idempotency
+- [ ] Added descriptive comments
+- [ ] Down migration truly reverses up migration
+
+### Testing Migration
+
+- [ ] Applied migration locally: \`make migrate-up\`
+- [ ] Verified migration status: \`make migrate-status\`
+- [ ] Tested rollback: \`make migrate-down\`
+- [ ] Re-applied migration: \`make migrate-up\`
+- [ ] Ran all tests: \`make test\`
+- [ ] Ran linter: \`make lint\`
+
+### Before Deployment
+
+- [ ] Migration reviewed by team
+- [ ] Backup strategy confirmed
+- [ ] Rollback plan documented
+
+## Summary
+
+### Key Takeaways
+
+1. **Always use versioned SQL migrations** - Not GORM AutoMigrate in production
+2. **Timestamp versioning prevents conflicts** - Teams can work in parallel
+3. **Test both up and down migrations** - Rollbacks should always work
+4. **One logical change per migration** - Keep migrations focused
+5. **Never modify existing migrations** - Create new migration to fix issues
+6. **Use transactions** - Wrap SQL in BEGIN/COMMIT for atomicity
+7. **Rollback 1 by default is intentional** - Safety first, STEPS for multiple
+8. **Use confirmation prompts** - Prevents accidental data loss
+9. **Monitor dirty state** - Detect and recover from failed migrations
+10. **Backup before production migrations** - Always have a recovery plan
+
+### Additional Resources
+
+- **[golang-migrate Documentation](https://github.com/golang-migrate/migrate)** - Official docs
+- **[Migration Testing Script](https://github.com/vahiiiid/go-rest-api-boilerplate/blob/main/scripts/test-migrations.sh)** - Automated testing
+- **[GRAB Documentation](https://vahiiiid.github.io/go-rest-api-docs/)** - Full project docs
+
+### Questions or Issues?
+
+- 📖 Check the [Migration Testing Script](https://github.com/vahiiiid/go-rest-api-boilerplate/blob/main/scripts/test-migrations.sh)
+- 🐛 [Open an issue](https://github.com/vahiiiid/go-rest-api-boilerplate/issues)
+- 💬 [Start a discussion](https://github.com/vahiiiid/go-rest-api-boilerplate/discussions)
+- ⭐ [Star the repository](https://github.com/vahiiiid/go-rest-api-boilerplate)
 
 ---
 
-## Resources
-
-- [golang-migrate Documentation](https://github.com/golang-migrate/migrate)
-- [goose Documentation](https://github.com/pressly/goose)
-- [Atlas Documentation](https://atlasgo.io/)
-- [PostgreSQL ALTER TABLE](https://www.postgresql.org/docs/current/sql-altertable.html)
-
----
-
-## Need Help?
-
-- See existing migrations for examples
-- Review PostgreSQL documentation
-- Open an issue on GitHub
-
----
-
-**Remember**: Migrations are your database's version control. Treat them with the same care as your code! 🗃️
-
+**Happy migrating! 🚀**

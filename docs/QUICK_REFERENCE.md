@@ -51,9 +51,16 @@ make lint                # Run linter
 make lint-fix            # Run linter and auto-fix issues
 make clean               # Clean build artifacts
 make deps                # Download dependencies
-make migrate-up          # Run database migrations (host)
-make migrate-down        # Rollback last migration (host)
-make migrate-status      # Show migration status (host)
+
+# Migration Commands (golang-migrate)
+make migrate-create NAME=<name>  # Create new migration with timestamp
+make migrate-up                   # Apply all pending migrations
+make migrate-down                 # Rollback last migration (safe default)
+make migrate-down STEPS=N         # Rollback N migrations
+make migrate-status               # Show current migration version
+make migrate-goto VERSION=<n>     # Jump to specific version
+make migrate-force VERSION=<n>    # Force set version (recovery)
+make migrate-drop                 # Drop all tables (danger!)
 ```
 
 ### Docker Commands
