@@ -43,14 +43,19 @@ This is a **production-ready, REST API boilerplate** written in Go. It demonstra
 ### Authentication & Security
 - **JWT tokens** with HS256 signing
 - **Bcrypt password hashing** (cost 10)
-- **Token expiration** (configurable, default 24h)
+- **OAuth 2.0 BCP compliant** refresh token rotation
+- **Automatic reuse detection** for token theft protection
+- **Token family tracking** with UUIDs
+- **Configurable TTLs** (Access: 15m, Refresh: 7 days)
 - **Authorization middleware** for protected routes
 - **Input validation** on all endpoints
 - **No sensitive data** in responses
 
 ### API Endpoints
-- `POST /api/v1/auth/register` - User registration
-- `POST /api/v1/auth/login` - User login
+- `POST /api/v1/auth/register` - User registration (returns token pair)
+- `POST /api/v1/auth/login` - User login (returns token pair)
+- `POST /api/v1/auth/refresh` - Refresh access token (public)
+- `POST /api/v1/auth/logout` - Revoke all tokens (protected)
 - `GET /api/v1/users/:id` - Get user (protected)
 - `PUT /api/v1/users/:id` - Update user (protected)
 - `DELETE /api/v1/users/:id` - Delete user (protected)

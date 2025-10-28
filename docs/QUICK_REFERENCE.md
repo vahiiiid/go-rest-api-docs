@@ -247,10 +247,21 @@ migrate -path migrations \
 # Register
 POST /api/v1/auth/register
 Body: {"name": "string", "email": "string", "password": "string"}
+Returns: {user, access_token, refresh_token, token_type, expires_in}
 
 # Login
 POST /api/v1/auth/login
 Body: {"email": "string", "password": "string"}
+Returns: {user, access_token, refresh_token, token_type, expires_in}
+
+# Refresh Access Token
+POST /api/v1/auth/refresh
+Body: {"refresh_token": "string"}
+Returns: {access_token, refresh_token, token_type, expires_in}
+
+# Logout (Requires Bearer Token)
+POST /api/v1/auth/logout
+Revokes all refresh tokens for the authenticated user
 ```
 
 ### Users (Protected - Requires Bearer Token)
@@ -314,6 +325,25 @@ curl -i -X POST http://localhost:8080/api/v1/auth/login \
     "email": "john@example.com",
     "password": "password123"
   }'
+```
+
+#### Refresh Access Token
+```bash
+REFRESH_TOKEN="your-refresh-token-here"
+
+curl -i -X POST http://localhost:8080/api/v1/auth/refresh \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"refresh_token\": \"$REFRESH_TOKEN\"
+  }"
+```
+
+#### Logout
+```bash
+TOKEN="your-jwt-token-here"
+
+curl -i -X POST http://localhost:8080/api/v1/auth/logout \
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 #### Get User by ID
