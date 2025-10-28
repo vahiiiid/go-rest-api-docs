@@ -135,10 +135,12 @@ nav:
       - Migrations Guide: MIGRATIONS_GUIDE.md
   - Example: TODO_EXAMPLE.md
   - Testing: TESTING.md
+  - API Features:
+      - Error Handling: ERROR_HANDLING.md
+      - Rate Limiting: RATE_LIMITING.md
+      - Logging & Monitoring: LOGGING.md
   - Infrastructure:
       - Docker Guide: DOCKER.md
       - Graceful Shutdown: GRACEFUL_SHUTDOWN.md
-      - Logging & Monitoring: LOGGING.md
-      - Rate Limiting: RATE_LIMITING.md
       - Swagger API Docs: SWAGGER.md
       - Documentation Setup: DOCS_SETUP.md
