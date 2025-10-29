@@ -165,7 +165,7 @@ go-rest-api-boilerplate/
 ├── internal/             # Main application code (private)
 │   ├── auth/             # Authentication logic (JWT, middleware)
 │   ├── config/           # Configuration management and validation
-│   ├── ctx/              # Context helpers/utilities
+│   ├── contextutil/      # Context helpers/utilities
 │   ├── db/               # Database connection and setup
 │   ├── middleware/       # HTTP middleware (logging, rate limiting)
 │   ├── migrate/          # Migration logic and status checks
@@ -197,7 +197,7 @@ go-rest-api-boilerplate/
 | `internal/` | Main application code (private) |
 | `internal/auth/` | Authentication logic (JWT, middleware) |
 | `internal/config/` | Configuration management and validation |
-| `internal/ctx/` | Context helpers/utilities |
+| `internal/contextutil/` | Context helpers/utilities |
 | `internal/db/` | Database connection and setup |
 | `internal/middleware/` | HTTP middleware (logging, rate limiting) |
 | `internal/migrate/` | Migration logic and status checks |
