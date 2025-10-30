@@ -189,7 +189,7 @@ import (
 )
 
 func (h *Handler) GetUser(c *gin.Context) {
-    user, err := h.service.GetUserByID(ctx, id)
+    user, err := h.service.GetUserByID(contextutil, id)
     if err != nil {
         if errors.Is(err, ErrUserNotFound) {
             _ = c.Error(apiErrors.NotFound("User not found"))
@@ -240,7 +240,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
         return
     }
     
-    user, err := h.service.UpdateUser(ctx, id, req)
+    user, err := h.service.UpdateUser(contextutil, id, req)
     if err != nil {
         if errors.Is(err, ErrEmailExists) {
             _ = c.Error(apiErrors.Conflict("Email already exists"))

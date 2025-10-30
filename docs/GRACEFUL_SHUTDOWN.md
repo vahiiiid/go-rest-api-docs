@@ -55,7 +55,7 @@ srv := &http.Server{
 
 1. Signal received → log notification
 2. Close database connections
-3. Call `srv.Shutdown(ctx)` with timeout
+3. Call `srv.Shutdown(contextutil)` with timeout
 4. Wait for active requests to complete or timeout
 5. Exit gracefully
 
