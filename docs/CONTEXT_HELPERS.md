@@ -4,7 +4,7 @@ The Context Helpers package provides type-safe, reusable functions for extractin
 
 ## 🎯 Overview
 
-The Context Helpers package (`internal/ctx`) offers a comprehensive set of functions that simplify user authentication and authorization in your handlers. Instead of manually extracting and validating JWT claims in every protected endpoint, you can use these helper functions for clean, readable, and maintainable code.
+The Context Helpers package (`internal/contextutil`) offers a comprehensive set of functions that simplify user authentication and authorization in your handlers. Instead of manually extracting and validating JWT claims in every protected endpoint, you can use these helper functions for clean, readable, and maintainable code.
 
 ### Key Benefits
 
@@ -22,7 +22,7 @@ The Context Helpers package (`internal/ctx`) offers a comprehensive set of funct
 Retrieves the complete authenticated user claims from context.
 
 ```go
-claims := ctx.GetUser(c)
+claims := contextutil.GetUser(c)
 if claims != nil {
     // User is authenticated
     fmt.Printf("User ID: %d, Email: %s\n", claims.UserID, claims.Email)
@@ -33,7 +33,7 @@ if claims != nil {
 Retrieves user claims or returns an error if not found.
 
 ```go
-claims, err := ctx.MustGetUser(c)
+claims, err := contextutil.MustGetUser(c)
 if err != nil {
     c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
     return
@@ -45,7 +45,7 @@ if err != nil {
 Extracts the authenticated user's ID from context. Returns `0` if not found.
 
 ```go
-userID := ctx.GetUserID(c)
+userID := contextutil.GetUserID(c)
 if userID == 0 {
     c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
     return
@@ -56,7 +56,7 @@ if userID == 0 {
 Gets user ID with error handling.
 
 ```go
-userID, err := ctx.MustGetUserID(c)
+userID, err := contextutil.MustGetUserID(c)
 if err != nil {
     c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
     return
@@ -67,7 +67,7 @@ if err != nil {
 Extracts the authenticated user's email address.
 
 ```go
-email := ctx.GetEmail(c)
+email := contextutil.GetEmail(c)
 if email == "" {
     c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
     return
@@ -78,7 +78,7 @@ if email == "" {
 Extracts the authenticated user's name.
 
 ```go
-userName := ctx.GetUserName(c)
+userName := contextutil.GetUserName(c)
 fmt.Printf("Welcome, %s!\n", userName)
 ```
 
@@ -88,7 +88,7 @@ fmt.Printf("Welcome, %s!\n", userName)
 Checks if the request has valid authentication.
 
 ```go
-if !ctx.IsAuthenticated(c) {
+if !contextutil.IsAuthenticated(c) {
     c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
     return
 }
@@ -98,7 +98,7 @@ if !ctx.IsAuthenticated(c) {
 Checks if the authenticated user can access the target user's resources (ownership-based access control).
 
 ```go
-if !ctx.CanAccessUser(c, uint(id)) {
+if !contextutil.CanAccessUser(c, uint(id)) {
     c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
     return
 }
@@ -108,7 +108,7 @@ if !ctx.CanAccessUser(c, uint(id)) {
 Checks if the user has a specific role (placeholder for future RBAC implementation).
 
 ```go
-if !ctx.HasRole(c, "admin") {
+if !contextutil.HasRole(c, "admin") {
     c.JSON(http.StatusForbidden, gin.H{"error": "Insufficient permissions"})
     return
 }
@@ -164,7 +164,7 @@ func (h *Handler) GetUser(c *gin.Context) {
     }
 
     // Clean authorization check
-    if !ctx.CanAccessUser(c, uint(id)) {
+    if !contextutil.CanAccessUser(c, uint(id)) {
         c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
         return
     }
@@ -188,12 +188,12 @@ func (h *Handler) GetUser(c *gin.Context) {
 
 ```go
 func (h *Handler) ProtectedEndpoint(c *gin.Context) {
-    if !ctx.IsAuthenticated(c) {
+    if !contextutil.IsAuthenticated(c) {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication required"})
         return
     }
     
-    userID := ctx.GetUserID(c)
+    userID := contextutil.GetUserID(c)
     // Use userID safely
 }
 ```
@@ -209,7 +209,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
     }
 
     // Check if user can access this resource
-    if !ctx.CanAccessUser(c, uint(id)) {
+    if !contextutil.CanAccessUser(c, uint(id)) {
         c.JSON(http.StatusForbidden, gin.H{"error": "Access denied"})
         return
     }
@@ -222,7 +222,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 
 ```go
 func (h *Handler) GetProfile(c *gin.Context) {
-    user := ctx.GetUser(c)
+    user := contextutil.GetUser(c)
     if user == nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
         return
@@ -242,13 +242,13 @@ func (h *Handler) GetProfile(c *gin.Context) {
 
 ```go
 func (h *Handler) StrictEndpoint(c *gin.Context) {
-    userID, err := ctx.MustGetUserID(c)
+    userID, err := contextutil.MustGetUserID(c)
     if err != nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication required"})
         return
     }
 
-    email, err := ctx.MustGetUser(c)
+    email, err := contextutil.MustGetUser(c)
     if err != nil {
         c.JSON(http.StatusUnauthorized, gin.H{"error": "User information missing"})
         return
@@ -317,13 +317,13 @@ protected.GET("/users/:id", userHandler.GetUser)
 
 ```go
 // Good: Consistent error responses
-if !ctx.IsAuthenticated(c) {
+if !contextutil.IsAuthenticated(c) {
     c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
     return
 }
 
 // Good: Use appropriate HTTP status codes
-if !ctx.CanAccessUser(c, targetID) {
+if !contextutil.CanAccessUser(c, targetID) {
     c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
     return
 }
@@ -341,7 +341,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
     }
 
     // Authentication & authorization
-    if !ctx.CanAccessUser(c, uint(id)) {
+    if !contextutil.CanAccessUser(c, uint(id)) {
         c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
         return
     }
