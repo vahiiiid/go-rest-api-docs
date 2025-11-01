@@ -62,7 +62,7 @@ That's it. You get a fully configured, battle-tested REST API with:
 
 - :material-shield-check: **JWT Authentication**
   
-    Secure token-based authentication with HS256 algorithm and bcrypt password hashing
+    OAuth 2.0 BCP compliant with refresh token rotation, automatic reuse detection, and secure token management
 
 - :material-account-group: **User Management**
   

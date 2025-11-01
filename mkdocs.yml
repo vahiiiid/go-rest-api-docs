@@ -136,6 +136,7 @@ nav:
   - Example: TODO_EXAMPLE.md
   - Testing: TESTING.md
   - API Features:
+      - Authentication & JWT: AUTHENTICATION.md
       - Error Handling: ERROR_HANDLING.md
       - Rate Limiting: RATE_LIMITING.md
       - Logging & Monitoring: LOGGING.md
