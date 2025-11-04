@@ -21,24 +21,6 @@ JWT secrets are critical for token security. This section covers proper generati
 - **SSL Required:** Database must use SSL (`sslmode: require`)
 - **Rotation Policy:** Rotate secrets periodically (recommended: every 90 days)
 
-### Weak Secret Detection
-
-The application automatically rejects secrets containing common weak patterns:
-
-**Rejected Patterns:**
-- `change-me`, `changeme`
-- `secret`, `password`, `pass`
-- `test`, `testing`
-- `dev`, `development`
-- `example`, `sample`
-- `default`, `admin`
-- `123456`, `password123`
-
-**Example Error:**
-```
-JWT_SECRET contains insecure phrase 'secret' - generate secure secret with: make generate-jwt-secret
-```
-
 ---
 
 ## 🔑 Generating JWT Secrets
@@ -171,17 +153,14 @@ make check-env
 ### ❌ DON'T: Use Weak Secrets
 
 ```bash
-# BAD - Too short
+# BAD - Too short (< 32 characters)
 JWT_SECRET=mysecret
 
-# BAD - Contains weak word
-JWT_SECRET=my-secret-key-123
+# BAD - Too short for production (< 64 characters)
+JWT_SECRET=my-secret-key-that-is-only-32-char
 
-# BAD - Predictable
-JWT_SECRET=test-secret-for-development
-
-# BAD - Contains sequential numbers
-JWT_SECRET=secret123456789
+# BAD - Not cryptographically random
+JWT_SECRET=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
 
 ### ✅ DO: Use Strong Secrets
@@ -192,6 +171,9 @@ JWT_SECRET=xKyLmNpQrStUvWzAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
 
 # GOOD - Generated with openssl
 JWT_SECRET=$(openssl rand -base64 96)
+
+# GOOD - Generated with make command
+make generate-jwt-secret
 ```
 
 ### ❌ DON'T: Commit Secrets to Git
@@ -269,7 +251,6 @@ curl http://localhost:8080/health
 ### Environment Setup Checklist
 
 - [ ] Generate production JWT secret (64+ characters)
-- [ ] Verify secret doesn't contain weak patterns
 - [ ] Set JWT_SECRET environment variable
 - [ ] Enable SSL for database (`DATABASE_SSLMODE=require`)
 - [ ] Set DATABASE_PASSWORD via environment variable
@@ -344,9 +325,8 @@ The application validates security configuration on startup:
 **Validation Checks:**
 1. JWT_SECRET is present
 2. JWT_SECRET length ≥ 32 characters (64+ for production)
-3. JWT_SECRET doesn't contain weak patterns
-4. DATABASE_PASSWORD is set in production
-5. SSL is enabled in production
+3. DATABASE_PASSWORD is set in production
+4. SSL is enabled in production
 
 **Example Validation Error:**
 ```

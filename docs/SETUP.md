@@ -301,7 +301,7 @@ DATABASE_SSLMODE=disable
 # JWT Configuration
 # Generate secure secret: make generate-jwt-secret
 # REQUIRED: Minimum 32 characters (64+ for production)
-# Must be cryptographically random - never use weak/predictable values
+# Must be cryptographically random
 JWT_SECRET=
 JWT_TTLHOURS=24
 

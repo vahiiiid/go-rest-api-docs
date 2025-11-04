@@ -160,7 +160,7 @@ All configuration values can be overridden with environment variables using the 
 
 | Variable | Default | Description | Accepted Values |
 |----------|---------|-------------|-----------------|
-| `JWT_SECRET` | `""` (REQUIRED) | JWT signing secret | **Min 32 chars** (64+ for production). Must be cryptographically random. Never use weak/predictable values. |
+| `JWT_SECRET` | `""` (REQUIRED) | JWT signing secret | **Min 32 chars** (64+ for production). Must be cryptographically random. |
 | `JWT_ACCESS_TOKEN_TTL` | `"15m"` | Access token lifetime | Duration string (e.g., "15m", "1h") |
 | `JWT_REFRESH_TOKEN_TTL` | `"168h"` | Refresh token lifetime (7 days) | Duration string (e.g., "168h", "7d") |
 | `JWT_TTLHOURS` | `24` | Token TTL in hours (deprecated) | Positive integer |
