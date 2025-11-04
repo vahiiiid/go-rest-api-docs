@@ -28,86 +28,69 @@ JWT secrets are critical for token security. This section covers proper generati
 ### Automated Generation (Recommended)
 
 #### Quick Start with Auto-Generation
+
 ```bash
 make quick-start
 ```
-The quick-start command automatically generates a secure JWT secret if missing or empty.
 
-#### Manual Generation
+The quick-start command automatically generates a secure 32+ character JWT secret if missing or empty.
+
+#### Generate or Check JWT Secret
+
 ```bash
 make generate-jwt-secret
 ```
 
-This command provides multiple generation options:
+**Behavior:**
 
-**Output:**
+- **If JWT_SECRET exists in .env:** Displays confirmation message (doesn't regenerate)
+- **If JWT_SECRET is missing:** Generates and automatically saves to .env
+- **Secret length:** 64 characters (base64 encoded from 48 random bytes)
+
+**Example Output (when JWT_SECRET missing):**
+
+```text
+🔐 Generating JWT secret...
+✅ JWT_SECRET generated and saved to .env
+
+⚠️  NEVER commit .env to git!
 ```
-🔐 JWT Secret Generation
-========================
 
-Choose generation method:
+**Example Output (when JWT_SECRET exists):**
 
-1. Development/Staging (32+ characters)
-   openssl rand -base64 48
+```text
+✅ JWT_SECRET already exists in .env
+💡 Current value is set (not displayed for security)
 
-2. Production (64+ characters) - RECOMMENDED
-   openssl rand -base64 96
-
-3. Alternative method (if openssl unavailable)
-   head -c 48 /dev/urandom | base64
-
-Generated secrets are automatically validated and ready to use.
-Add to your .env file: JWT_SECRET=<generated-value>
+To regenerate, remove the current JWT_SECRET line from .env first
 ```
 
 ### Manual Generation Methods
 
 #### Using OpenSSL (Recommended)
 
-**Development/Staging (32+ characters):**
+Generate a secure 32+ character secret:
+
 ```bash
 openssl rand -base64 48
 ```
 
-**Production (64+ characters):**
-```bash
-openssl rand -base64 96
-```
-
 #### Using /dev/urandom
 
-**Development/Staging:**
 ```bash
 head -c 48 /dev/urandom | base64 | tr -d '\n'
 ```
 
-**Production:**
-```bash
-head -c 96 /dev/urandom | base64 | tr -d '\n'
-```
-
 #### Using Python
 
-**Development/Staging:**
 ```bash
 python3 -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
 
-**Production:**
-```bash
-python3 -c "import secrets; print(secrets.token_urlsafe(96))"
-```
-
 #### Using Node.js
 
-**Development/Staging:**
 ```bash
 node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
-```
-
-**Production:**
-```bash
-node -e "console.log(require('crypto').randomBytes(96).toString('base64'))"
 ```
 
 ---
