@@ -482,18 +482,63 @@ go list -f '{{.Dir}}' ./... | xargs -I {} goimports -l {}
 go test -v -run ^TestRegisterHandler$ ./tests
 ```
 
-## 🔐 Generate JWT Secret
+## 🔐 JWT Secret Management
 
+### Generate Secure JWT Secret
+
+**Recommended Method (Using Make):**
 ```bash
-# Using openssl
-openssl rand -hex 32
-
-# Using /dev/urandom
-cat /dev/urandom | head -c 32 | base64
-
-# Using Go
-go run -e 'package main; import ("crypto/rand"; "encoding/base64"; "fmt"; "os"); func main() { b := make([]byte, 32); rand.Read(b); fmt.Println(base64.StdEncoding.EncodeToString(b)); os.Exit(0) }'
+# Generates secure JWT secret with validation
+make generate-jwt-secret
 ```
+
+**Auto-Generation (During Setup):**
+```bash
+# Quick-start automatically generates JWT secret if missing
+make quick-start
+```
+
+**Validate Configuration:**
+```bash
+# Check if JWT_SECRET and other required variables are set
+make check-env
+```
+
+### Manual Generation Methods
+
+**Using OpenSSL (Development/Staging - 32+ chars):**
+```bash
+openssl rand -base64 48
+```
+
+**Using OpenSSL (Production - 64+ chars):**
+```bash
+openssl rand -base64 96
+```
+
+**Using /dev/urandom:**
+```bash
+head -c 48 /dev/urandom | base64 | tr -d '\n'
+```
+
+**Using Python:**
+```bash
+python3 -c "import secrets; print(secrets.token_urlsafe(48))"
+```
+
+**Using Node.js:**
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
+```
+
+### Security Requirements
+
+- ✅ **Minimum Length:** 32 characters (64+ for production)
+- ✅ **Cryptographically Random:** Use secure generation methods
+- ❌ **Rejected Patterns:** "secret", "password", "test", "dev", "123456", etc.
+- ⚠️ **Never Commit:** JWT secrets must never be in version control
+
+**📚 Complete Security Guide:** [Security Documentation](SECURITY_GUIDE.md)
 
 ## 📦 Installation
 

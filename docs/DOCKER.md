@@ -268,7 +268,9 @@ DATABASE_NAME=grab
 DATABASE_SSLMODE=disable
 
 # JWT Configuration
-JWT_SECRET=dev-secret-for-development-only
+# Generate secure secret: make generate-jwt-secret
+# REQUIRED: Minimum 32 characters (64+ for production)
+JWT_SECRET=
 JWT_TTLHOURS=24
 
 # Server Configuration
@@ -294,8 +296,10 @@ DATABASE_HOST=db  # Docker service name
 DATABASE_PASSWORD=STRONG_DB_PASSWORD
 DATABASE_SSLMODE=require
 
-# JWT Configuration (must be 32+ characters)
-JWT_SECRET=this-is-a-very-strong-production-jwt-secret-32-chars-minimum
+# JWT Configuration
+# Generate secure secret: make generate-jwt-secret or openssl rand -base64 96
+# REQUIRED: Minimum 64 characters for production
+JWT_SECRET=
 JWT_TTLHOURS=1
 
 # Rate Limiting (optional)

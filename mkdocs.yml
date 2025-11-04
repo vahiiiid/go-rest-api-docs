@@ -127,6 +127,7 @@ nav:
   - Getting Started:
       - Setup Guide: SETUP.md
       - Configuration Guide: CONFIGURATION.md
+      - Security Guide: SECURITY_GUIDE.md
       - Quick Reference: QUICK_REFERENCE.md
   - Development:
       - Development Guide: DEVELOPMENT_GUIDE.md

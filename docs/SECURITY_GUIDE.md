@@ -1,0 +1,393 @@
+# Security Guide
+
+Comprehensive security guidelines and best practices for the Go REST API Boilerplate (GRAB).
+
+---
+
+## 🔐 JWT Secret Management
+
+JWT secrets are critical for token security. This section covers proper generation, storage, and validation.
+
+### Security Requirements
+
+#### All Environments
+- **Minimum Length:** 32 characters
+- **Cryptographically Random:** Generated using secure methods (not predictable)
+- **Never Committed:** Must never be checked into version control
+- **Unique per Environment:** Different secrets for development, staging, and production
+
+#### Production Requirements
+- **Minimum Length:** 64 characters (stricter requirement)
+- **SSL Required:** Database must use SSL (`sslmode: require`)
+- **Rotation Policy:** Rotate secrets periodically (recommended: every 90 days)
+
+### Weak Secret Detection
+
+The application automatically rejects secrets containing common weak patterns:
+
+**Rejected Patterns:**
+- `change-me`, `changeme`
+- `secret`, `password`, `pass`
+- `test`, `testing`
+- `dev`, `development`
+- `example`, `sample`
+- `default`, `admin`
+- `123456`, `password123`
+
+**Example Error:**
+```
+JWT_SECRET contains insecure phrase 'secret' - generate secure secret with: make generate-jwt-secret
+```
+
+---
+
+## 🔑 Generating JWT Secrets
+
+### Automated Generation (Recommended)
+
+#### Quick Start with Auto-Generation
+```bash
+make quick-start
+```
+The quick-start command automatically generates a secure JWT secret if missing or empty.
+
+#### Manual Generation
+```bash
+make generate-jwt-secret
+```
+
+This command provides multiple generation options:
+
+**Output:**
+```
+🔐 JWT Secret Generation
+========================
+
+Choose generation method:
+
+1. Development/Staging (32+ characters)
+   openssl rand -base64 48
+
+2. Production (64+ characters) - RECOMMENDED
+   openssl rand -base64 96
+
+3. Alternative method (if openssl unavailable)
+   head -c 48 /dev/urandom | base64
+
+Generated secrets are automatically validated and ready to use.
+Add to your .env file: JWT_SECRET=<generated-value>
+```
+
+### Manual Generation Methods
+
+#### Using OpenSSL (Recommended)
+
+**Development/Staging (32+ characters):**
+```bash
+openssl rand -base64 48
+```
+
+**Production (64+ characters):**
+```bash
+openssl rand -base64 96
+```
+
+#### Using /dev/urandom
+
+**Development/Staging:**
+```bash
+head -c 48 /dev/urandom | base64 | tr -d '\n'
+```
+
+**Production:**
+```bash
+head -c 96 /dev/urandom | base64 | tr -d '\n'
+```
+
+#### Using Python
+
+**Development/Staging:**
+```bash
+python3 -c "import secrets; print(secrets.token_urlsafe(48))"
+```
+
+**Production:**
+```bash
+python3 -c "import secrets; print(secrets.token_urlsafe(96))"
+```
+
+#### Using Node.js
+
+**Development/Staging:**
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
+```
+
+**Production:**
+```bash
+node -e "console.log(require('crypto').randomBytes(96).toString('base64'))"
+```
+
+---
+
+## 📝 Environment Configuration
+
+### .env File Setup
+
+**1. Copy Template:**
+```bash
+cp .env.example .env
+```
+
+**2. Generate Secret:**
+```bash
+make generate-jwt-secret
+```
+
+**3. Add to .env:**
+```bash
+JWT_SECRET=xKyLmNpQrStUvWzAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
+```
+
+### Environment Validation
+
+Check your environment configuration:
+```bash
+make check-env
+```
+
+**Example Output:**
+```
+✅ .env file exists
+✅ JWT_SECRET is set
+✅ JWT_SECRET length: 64 characters (recommended for production)
+✅ DATABASE_PASSWORD is set
+```
+
+---
+
+## ⚠️ Common Security Mistakes
+
+### ❌ DON'T: Use Weak Secrets
+
+```bash
+# BAD - Too short
+JWT_SECRET=mysecret
+
+# BAD - Contains weak word
+JWT_SECRET=my-secret-key-123
+
+# BAD - Predictable
+JWT_SECRET=test-secret-for-development
+
+# BAD - Contains sequential numbers
+JWT_SECRET=secret123456789
+```
+
+### ✅ DO: Use Strong Secrets
+
+```bash
+# GOOD - Cryptographically random, 64+ chars
+JWT_SECRET=xKyLmNpQrStUvWzAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ
+
+# GOOD - Generated with openssl
+JWT_SECRET=$(openssl rand -base64 96)
+```
+
+### ❌ DON'T: Commit Secrets to Git
+
+```yaml
+# config.yaml - BAD
+jwt:
+  secret: "my-hardcoded-secret"  # ❌ Never do this
+```
+
+```bash
+# .env - BAD
+JWT_SECRET=hardcoded-value
+git add .env  # ❌ Never commit .env files
+```
+
+### ✅ DO: Use Environment Variables
+
+```yaml
+# config.yaml - GOOD
+jwt:
+  # No secret field - must be set via JWT_SECRET env var ✅
+  access_token_ttl: "15m"
+  refresh_token_ttl: "168h"
+```
+
+```bash
+# .env - GOOD (not committed to git)
+JWT_SECRET=$(openssl rand -base64 96)
+
+# .gitignore - GOOD
+.env  # ✅ Always ignored
+```
+
+---
+
+## 🔄 Secret Rotation
+
+### When to Rotate Secrets
+
+- **Scheduled:** Every 90 days (production)
+- **Security Incident:** Immediately if compromise suspected
+- **Team Changes:** When team members with access leave
+- **Compliance:** As required by security policies
+
+### Rotation Process
+
+**1. Generate New Secret:**
+```bash
+make generate-jwt-secret
+```
+
+**2. Update Environment:**
+```bash
+# Update .env file with new secret
+JWT_SECRET=<new-secret-value>
+```
+
+**3. Restart Application:**
+```bash
+make restart
+```
+
+**4. Verify:**
+```bash
+curl http://localhost:8080/health
+```
+
+**Note:** Existing JWT tokens will become invalid after rotation. Users will need to re-authenticate.
+
+---
+
+## 🏗️ Production Deployment
+
+### Environment Setup Checklist
+
+- [ ] Generate production JWT secret (64+ characters)
+- [ ] Verify secret doesn't contain weak patterns
+- [ ] Set JWT_SECRET environment variable
+- [ ] Enable SSL for database (`DATABASE_SSLMODE=require`)
+- [ ] Set DATABASE_PASSWORD via environment variable
+- [ ] Verify APP_ENVIRONMENT=production
+- [ ] Disable debug mode (APP_DEBUG=false)
+- [ ] Run `make check-env` to validate configuration
+
+### Docker Deployment
+
+**docker-compose.prod.yml:**
+```yaml
+services:
+  app:
+    environment:
+      - APP_ENVIRONMENT=production
+      - JWT_SECRET=${JWT_SECRET}  # From host environment
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_SSLMODE=require
+```
+
+**Start Production:**
+```bash
+# Set secrets in shell
+export JWT_SECRET=$(openssl rand -base64 96)
+export DATABASE_PASSWORD=$(openssl rand -base64 32)
+
+# Start services
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### Kubernetes Deployment
+
+**Create Secret:**
+```bash
+kubectl create secret generic app-secrets \
+  --from-literal=jwt-secret=$(openssl rand -base64 96) \
+  --from-literal=database-password=$(openssl rand -base64 32)
+```
+
+**Deployment YAML:**
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grab-api
+spec:
+  template:
+    spec:
+      containers:
+      - name: api
+        env:
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: jwt-secret
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: database-password
+```
+
+---
+
+## 🔍 Security Validation
+
+### Startup Validation
+
+The application validates security configuration on startup:
+
+**Validation Checks:**
+1. JWT_SECRET is present
+2. JWT_SECRET length ≥ 32 characters (64+ for production)
+3. JWT_SECRET doesn't contain weak patterns
+4. DATABASE_PASSWORD is set in production
+5. SSL is enabled in production
+
+**Example Validation Error:**
+```
+ERROR Failed to load configuration error="JWT_SECRET must be at least 32 characters (current: 16)
+Generate secure secret: make generate-jwt-secret"
+```
+
+### Runtime Security
+
+**Token Validation:**
+- All protected endpoints validate JWT tokens
+- Expired tokens are automatically rejected
+- Invalid signatures are rejected
+- Token refresh requires valid refresh token
+
+**Rate Limiting:**
+- Optional rate limiting per endpoint
+- Configurable via `RATELIMIT_ENABLED`, `RATELIMIT_REQUESTS`, `RATELIMIT_WINDOW`
+
+---
+
+## 📚 Additional Security Resources
+
+### OWASP Guidelines
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [JWT Security Best Practices](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html)
+
+### 12-Factor App Methodology
+- [Config](https://12factor.net/config) - Store config in environment
+
+### Related Documentation
+- [Configuration Guide](CONFIGURATION.md) - Complete configuration reference
+- [Setup Guide](SETUP.md) - Initial setup and quick start
+- [Development Guide](DEVELOPMENT_GUIDE.md) - Development best practices
+
+---
+
+## 🆘 Support
+
+If you have security concerns or questions:
+
+1. **Security Issues:** Report via [GitHub Security Advisories](https://github.com/vahiiiid/go-rest-api-boilerplate/security/advisories)
+2. **General Questions:** Open an [issue](https://github.com/vahiiiid/go-rest-api-boilerplate/issues)
+3. **Documentation:** Check [full documentation](https://vahiiiid.github.io/go-rest-api-docs/)
