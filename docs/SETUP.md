@@ -264,11 +264,12 @@ make quick-start  # Automatically generates if missing
 make generate-jwt-secret
 ```
 
-The `generate-jwt-secret` command provides multiple options:
+The `generate-jwt-secret` command automatically generates and saves a secure JWT secret to your `.env` file:
 
-- **Development/Staging:** 32+ characters (using `openssl rand -base64 48`)
-- **Production:** 64+ characters (using `openssl rand -base64 96`)
-- **Alternative:** Uses `/dev/urandom` if OpenSSL is unavailable
+- **Auto-fills .env:** Checks if JWT_SECRET exists and generates if missing
+- **Secret length:** 64 characters (base64 encoded from 48 random bytes)
+- **Minimum requirement:** 32+ characters for all environments
+- **Safe operation:** Won't overwrite existing secrets
 
 #### Configure .env File
 
@@ -276,11 +277,8 @@ The `generate-jwt-secret` command provides multiple options:
 # Copy environment template
 cp .env.example .env
 
-# Generate JWT secret
+# Generate JWT secret (auto-saved to .env)
 make generate-jwt-secret
-
-# Edit .env file and add the generated secret
-nano .env
 ```
 
 Update these values using the **new environment variable names**:

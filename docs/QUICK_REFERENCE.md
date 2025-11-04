@@ -506,14 +506,9 @@ make check-env
 
 ### Manual Generation Methods
 
-**Using OpenSSL (Development/Staging - 32+ chars):**
+**Using OpenSSL (recommended - generates 64 chars):**
 ```bash
 openssl rand -base64 48
-```
-
-**Using OpenSSL (Production - 64+ chars):**
-```bash
-openssl rand -base64 96
 ```
 
 **Using /dev/urandom:**

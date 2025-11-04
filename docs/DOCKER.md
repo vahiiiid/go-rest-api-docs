@@ -297,8 +297,8 @@ DATABASE_PASSWORD=STRONG_DB_PASSWORD
 DATABASE_SSLMODE=require
 
 # JWT Configuration
-# Generate secure secret: make generate-jwt-secret or openssl rand -base64 96
-# REQUIRED: Minimum 64 characters for production
+# Generate secure secret: make generate-jwt-secret (auto-saved to .env)
+# REQUIRED: Minimum 32+ characters, 64 recommended
 JWT_SECRET=
 JWT_TTLHOURS=1
 

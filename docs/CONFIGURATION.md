@@ -87,7 +87,6 @@ database:
   sslmode: "disable"                # SSL disabled for convenience
 
 jwt:
-  # SECRET REMOVED FOR SECURITY - Must be set via JWT_SECRET environment variable
   # Generate: make generate-jwt-secret
   ttlhours: 24
 ```
@@ -105,7 +104,6 @@ database:
   sslmode: "require"                # SSL required in production
 
 jwt:
-  # SECRET REMOVED FOR SECURITY - REQUIRED: Set via JWT_SECRET (64+ characters)
   # Generate: make generate-jwt-secret
   ttlhours: 24
 ```
@@ -122,7 +120,6 @@ database:
   sslmode: "require"                # SSL required in staging
 
 jwt:
-  # SECRET REMOVED FOR SECURITY - Must be set via JWT_SECRET environment variable
   # Generate: make generate-jwt-secret
   ttlhours: 24
 ```
@@ -170,7 +167,7 @@ All configuration values can be overridden with environment variables using the 
 - ✅ **Generate secure secret:** `make generate-jwt-secret`
 - ✅ **Auto-generated:** `make quick-start` creates one automatically if missing
 - ❌ **Rejected patterns:** "secret", "password", "test", "dev", "123456", etc.
-- ⚠️ **Production requires:** 64+ characters minimum
+- ⚠️ **All environments require:** 32+ characters minimum
 
 #### Server Configuration
 
