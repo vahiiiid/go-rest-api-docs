@@ -2,74 +2,78 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/AUTHENTICATION/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/CONFIGURATION/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/CONTEXT_HELPERS/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/DEVELOPMENT_GUIDE/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/DOCKER/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/DOCS_SETUP/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/ERROR_HANDLING/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/GRACEFUL_SHUTDOWN/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/LOGGING/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/MIGRATIONS_GUIDE/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/PROJECT_SUMMARY/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/QUICK_REFERENCE/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/RATE_LIMITING/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
+    </url>
+    <url>
+         <loc>https://vahiiiid.github.io/go-rest-api-docs/SECURITY_GUIDE/</loc>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/SETUP/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/SWAGGER/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/TESTING/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
     <url>
          <loc>https://vahiiiid.github.io/go-rest-api-docs/TODO_EXAMPLE/</loc>
-         <lastmod>2025-11-02</lastmod>
+         <lastmod>2025-11-06</lastmod>
     </url>
 </urlset>
