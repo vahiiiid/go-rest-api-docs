@@ -277,10 +277,20 @@ Body: {"name": "string", "email": "string"}
 DELETE /api/v1/users/:id
 ```
 
-### Health Check (Public)
+### Health Check Endpoints (Public)
+
 ```bash
+# Overall system health with uptime
 GET /health
+
+# Liveness probe (for Kubernetes/Docker)
+GET /health/live
+
+# Readiness probe with dependency checks
+GET /health/ready
 ```
+
+See [Health Checks Guide](HEALTH_CHECKS.md) for detailed documentation.
 
 ## 📝 API Testing
 
@@ -371,9 +381,16 @@ curl -i -X DELETE http://localhost:8080/api/v1/users/1 \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-#### Health Check
+#### Health Check Endpoints
 ```bash
+# Overall health
 curl -i http://localhost:8080/health
+
+# Liveness probe
+curl -i http://localhost:8080/health/live
+
+# Readiness probe with checks
+curl -i http://localhost:8080/health/ready
 ```
 
 ## 🔧 Environment Variables
@@ -596,7 +613,9 @@ docker run -d -p 8080:8080 --env-file .env your-registry/go-rest-api-boilerplate
 
 | Resource | URL |
 |----------|-----|
-| Health Check | http://localhost:8080/health |
+| Health Check (Overall) | http://localhost:8080/health |
+| Health Check (Liveness) | http://localhost:8080/health/live |
+| Health Check (Readiness) | http://localhost:8080/health/ready |
 | Swagger UI | http://localhost:8080/swagger/index.html |
 | API Base | http://localhost:8080/api/v1 |
 
