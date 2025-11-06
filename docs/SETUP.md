@@ -252,12 +252,33 @@ The application uses a **layered configuration system** with Viper that supports
 2. **Environment-specific config files** (e.g., `config.development.yaml`)
 3. **Base config file** (`config.yaml`) (lowest priority)
 
+#### Generate JWT Secret
+
+**IMPORTANT:** JWT secret is required and must be secure (32+ characters).
+
+```bash
+# Option 1: Auto-generate during quick-start
+make quick-start  # Automatically generates if missing
+
+# Option 2: Generate manually
+make generate-jwt-secret
+```
+
+The `generate-jwt-secret` command automatically generates and saves a secure JWT secret to your `.env` file:
+
+- **Auto-fills .env:** Checks if JWT_SECRET exists and generates if missing
+- **Secret length:** 64 characters (base64 encoded from 48 random bytes)
+- **Minimum requirement:** 32+ characters for all environments
+- **Safe operation:** Won't overwrite existing secrets
+
+#### Configure .env File
+
 ```bash
 # Copy environment template
 cp .env.example .env
 
-# Edit .env file
-nano .env
+# Generate JWT secret (auto-saved to .env)
+make generate-jwt-secret
 ```
 
 Update these values using the **new environment variable names**:
@@ -276,7 +297,10 @@ DATABASE_NAME=go_api_db
 DATABASE_SSLMODE=disable
 
 # JWT Configuration
-JWT_SECRET=your-secret-key-change-this-in-production
+# Generate secure secret: make generate-jwt-secret
+# REQUIRED: Minimum 32 characters (64+ for production)
+# Must be cryptographically random
+JWT_SECRET=
 JWT_TTLHOURS=24
 
 # Server Configuration  

@@ -87,7 +87,8 @@ database:
   sslmode: "disable"                # SSL disabled for convenience
 
 jwt:
-  secret: "change-me"               # Default for development
+  # Generate: make generate-jwt-secret
+  ttlhours: 24
 ```
 
 #### Production (`configs/config.production.yaml`)
@@ -103,7 +104,8 @@ database:
   sslmode: "require"                # SSL required in production
 
 jwt:
-  secret: ""                        # Must be set via JWT_SECRET (min 32 chars)
+  # Generate: make generate-jwt-secret
+  ttlhours: 24
 ```
 
 #### Staging (`configs/config.staging.yaml`)
@@ -118,7 +120,8 @@ database:
   sslmode: "require"                # SSL required in staging
 
 jwt:
-  secret: ""                        # Must be set via JWT_SECRET
+  # Generate: make generate-jwt-secret
+  ttlhours: 24
 ```
 
 ---
@@ -150,10 +153,21 @@ All configuration values can be overridden with environment variables using the 
 
 #### JWT Configuration
 
+**CRITICAL SECURITY REQUIREMENT:** JWT_SECRET must be set and secure.
+
 | Variable | Default | Description | Accepted Values |
 |----------|---------|-------------|-----------------|
-| `JWT_SECRET` | `""` | JWT signing secret | Any string (min 32 chars in production) |
-| `JWT_TTLHOURS` | `24` | Token TTL in hours | Positive integer |
+| `JWT_SECRET` | `""` (REQUIRED) | JWT signing secret | **Min 32 chars** (64+ for production). Must be cryptographically random. |
+| `JWT_ACCESS_TOKEN_TTL` | `"15m"` | Access token lifetime | Duration string (e.g., "15m", "1h") |
+| `JWT_REFRESH_TOKEN_TTL` | `"168h"` | Refresh token lifetime (7 days) | Duration string (e.g., "168h", "7d") |
+| `JWT_TTLHOURS` | `24` | Token TTL in hours (deprecated) | Positive integer |
+
+**Security Notes:**
+
+- ✅ **Generate secure secret:** `make generate-jwt-secret`
+- ✅ **Auto-generated:** `make quick-start` creates one automatically if missing
+- ❌ **Rejected patterns:** "secret", "password", "test", "dev", "123456", etc.
+- ⚠️ **All environments require:** 32+ characters minimum
 
 #### Server Configuration
 
