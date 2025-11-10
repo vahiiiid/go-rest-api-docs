@@ -114,8 +114,13 @@ Readiness probe endpoint with dependency health checks. Returns service status a
 Health check behavior is configured in `configs/config.yaml`:
 
 ```yaml
+app:
+  name: "GRAB API"
+  version: "1.0.0"                 # Version shown in health responses
+  environment: "development"
+
 health:
-  timeout: "5s"                    # Maximum duration for health checks
+  timeout: 5                       # Health check timeout in seconds
   database_check_enabled: true     # Enable/disable database health checks
 ```
 
@@ -124,7 +129,8 @@ health:
 Override configuration using environment variables:
 
 ```bash
-HEALTH_TIMEOUT=10s
+APP_VERSION=1.2.0
+HEALTH_TIMEOUT=10
 HEALTH_DATABASE_CHECK_ENABLED=false
 ```
 
@@ -148,6 +154,52 @@ The database checker performs two operations:
 // Database checker automatically registered in SetupRouter
 db, err := db.NewPostgresDB(...)
 router := server.SetupRouter(userHandler, authService, cfg, db)
+```
+
+## Architecture & Directory Structure
+
+The health check system follows clean architecture principles with clear separation of concerns:
+
+```
+internal/health/
+├── checker.go              # Checker interface
+├── model.go                # Health status types and response structures
+├── service.go              # Health service with uptime tracking
+├── service_test.go         # Service unit tests
+├── handler.go              # Gin HTTP handlers with Swagger annotations
+├── handler_test.go         # Handler unit tests
+├── database_checker.go     # PostgreSQL health checker implementation
+└── database_checker_test.go # Database checker tests
+```
+
+### Component Responsibilities
+
+- **checker.go**: Defines the `Checker` interface for extensibility
+- **model.go**: Health status constants (`StatusHealthy`, `StatusDegraded`, `StatusUnhealthy`) and response models
+- **service.go**: Orchestrates health checks, tracks uptime, aggregates statuses
+- **handler.go**: HTTP endpoints (`/health`, `/health/live`, `/health/ready`) with Swagger documentation
+- **database_checker.go**: Database health verification with latency-based thresholds
+
+### Integration Points
+
+The health system is wired in `internal/server/router.go`:
+
+```go
+// Conditional checker creation based on config
+var checkers []health.Checker
+if cfg.Health.DatabaseCheckEnabled {
+    dbChecker := health.NewDatabaseChecker(db)
+    checkers = append(checkers, dbChecker)
+}
+
+// Service initialization with app version from config
+healthService := health.NewService(checkers, cfg.App.Version, cfg.App.Environment)
+healthHandler := health.NewHandler(healthService)
+
+// Route registration
+router.GET("/health", healthHandler.Health)
+router.GET("/health/live", healthHandler.Live)
+router.GET("/health/ready", healthHandler.Ready)
 ```
 
 ## Kubernetes Integration
