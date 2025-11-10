@@ -141,6 +141,7 @@ nav:
       - Error Handling: ERROR_HANDLING.md
       - Rate Limiting: RATE_LIMITING.md
       - Logging & Monitoring: LOGGING.md
+      - Health Checks: HEALTH_CHECKS.md
   - Infrastructure:
       - Docker Guide: DOCKER.md
       - Graceful Shutdown: GRACEFUL_SHUTDOWN.md
