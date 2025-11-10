@@ -202,6 +202,366 @@ router.GET("/health/live", healthHandler.Live)
 router.GET("/health/ready", healthHandler.Ready)
 ```
 
+## Security Considerations
+
+### Overview
+
+Health check endpoints are designed to be publicly accessible for container orchestration platforms (Kubernetes, Docker Swarm) and load balancers. However, they expose system information that could be valuable to attackers. This section helps you understand the security implications and implement appropriate safeguards for your deployment environment.
+
+### Information Disclosure Risks
+
+#### What Information is Exposed?
+
+| Information | Endpoint | Security Impact | Mitigation Priority |
+|------------|----------|-----------------|-------------------|
+| **System Uptime** | All | Low - Reveals restart/patch cycles | Low |
+| **Application Version** | All | Low - May reveal outdated versions | Medium |
+| **Environment Name** | All | Low - Confirms dev/staging/prod | Low |
+| **Database Response Time** | `/health/ready` | Medium - Performance profiling | Medium |
+| **Dependency Status** | `/health/ready` | Medium - Infrastructure mapping | High |
+| **Error Messages** | `/health/ready` | Medium - Technical details | High |
+
+#### Why This Matters
+
+1. **Reconnaissance**: Attackers can build a profile of your infrastructure
+2. **Timing Attacks**: Response times may reveal database load or query complexity
+3. **Version Targeting**: Known vulnerabilities can be exploited if versions are exposed
+4. **Uptime Analysis**: Helps attackers identify maintenance windows or patch cycles
+
+### Risk Assessment by Deployment Type
+
+#### ✅ **Low Risk Scenarios** (Public Exposure Acceptable)
+
+- **Internal Development Environments** - No sensitive data, fast iteration needed
+- **Staging with Test Data** - Used for testing, monitoring visibility is priority
+- **Kubernetes Clusters** - Health checks must be accessible to kubelet
+- **Behind Corporate VPN** - Network already restricted
+- **Container Orchestration** - Docker healthchecks require public endpoints
+
+#### ⚠️ **Medium Risk Scenarios** (Consider Restrictions)
+
+- **Public-Facing APIs** - Exposed to internet but not handling sensitive data
+- **Multi-Tenant Systems** - Tenant data separated at application level
+- **APIs with Rate Limiting** - Already have DoS protection in place
+
+#### 🚨 **High Risk Scenarios** (Implement Restrictions)
+
+- **Financial Services APIs** - Regulated environments (PCI-DSS, SOC2)
+- **Healthcare Applications** - HIPAA compliance required
+- **Government Systems** - Strict security requirements
+- **High-Value Targets** - Known to be targeted by attackers
+
+### Production Deployment Best Practices
+
+#### 1. Network-Level Security (Recommended Approach)
+
+The most effective and maintainable security approach is to restrict access at the infrastructure level:
+
+##### **Kubernetes Network Policies**
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-health-checks-from-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: go-rest-api
+  policyTypes:
+  - Ingress
+  ingress:
+  # Allow health checks from ingress controller only
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 8080
+  # Allow health checks from kubelet (node network)
+  - from:
+    - ipBlock:
+        cidr: 10.0.0.0/8  # Your cluster CIDR
+    ports:
+    - protocol: TCP
+      port: 8080
+```
+
+##### **AWS Security Group Example**
+
+```hcl
+# Terraform configuration
+resource "aws_security_group_rule" "health_check_alb" {
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = aws_security_group.alb.id
+  security_group_id = aws_security_group.api.id
+  description       = "Allow health checks from ALB only"
+}
+
+resource "aws_security_group_rule" "health_check_monitoring" {
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  cidr_blocks       = ["10.0.0.0/16"]  # Internal VPC CIDR
+  security_group_id = aws_security_group.api.id
+  description       = "Allow health checks from internal monitoring"
+}
+```
+
+##### **Docker Compose with Private Network**
+
+```yaml
+version: '3.8'
+services:
+  api:
+    image: go-rest-api:latest
+    networks:
+      - internal
+    # Health check accessible only within Docker network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/live"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    networks:
+      - internal
+      - public
+    # Nginx can access API health checks
+    # Public only sees Nginx
+
+networks:
+  internal:
+    internal: true  # Not accessible from host
+  public:
+    driver: bridge
+```
+
+#### 2. Reverse Proxy Authentication
+
+Use a reverse proxy (Nginx, Traefik, Envoy) to add authentication:
+
+##### **Nginx with Basic Auth**
+
+```nginx
+# /etc/nginx/sites-available/api
+
+# Public health endpoints (for load balancer)
+location /health/live {
+    proxy_pass http://api:8080;
+    # No auth required - just liveness
+}
+
+location /health/ready {
+    proxy_pass http://api:8080;
+    # No auth required - load balancer needs this
+}
+
+# Protected detailed health endpoint
+location /health {
+    auth_basic "Health Monitoring";
+    auth_basic_user_file /etc/nginx/.htpasswd;
+    proxy_pass http://api:8080;
+}
+
+# Generate password file:
+# htpasswd -c /etc/nginx/.htpasswd monitoring_user
+```
+
+##### **Traefik with Middleware**
+
+```yaml
+# traefik-config.yml
+http:
+  routers:
+    api-health:
+      rule: "PathPrefix(`/health`)"
+      middlewares:
+        - health-auth
+      service: api
+
+  middlewares:
+    health-auth:
+      basicAuth:
+        users:
+          - "monitoring:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/"
+          # Generated with: htpasswd -nb monitoring password
+
+  services:
+    api:
+      loadBalancer:
+        servers:
+          - url: "http://api:8080"
+```
+
+#### 3. Configuration-Based Security
+
+Minimize information disclosure through configuration:
+
+##### **Disable Database Checks for Public Endpoints**
+
+```yaml
+# configs/config.production.yaml
+health:
+  timeout: 5
+  database_check_enabled: false  # Disable for public /health/ready
+```
+
+This provides readiness without exposing database performance data.
+
+##### **Use Generic Version Numbers**
+
+```yaml
+# configs/config.production.yaml
+app:
+  version: "2.x"  # Don't expose exact version (2.3.1)
+  environment: "production"
+```
+
+##### **Separate Internal Monitoring Endpoints** (Future Enhancement)
+
+Consider creating authenticated `/metrics` or `/health/detailed` endpoints for internal monitoring while keeping basic health checks public.
+
+#### 4. Monitoring and Alerting
+
+Track health endpoint access to detect reconnaissance:
+
+```yaml
+# Example: Alert on excessive health check requests
+- alert: HealthCheckSpike
+  expr: rate(http_requests_total{path=~"/health.*"}[5m]) > 100
+  for: 5m
+  labels:
+    severity: warning
+  annotations:
+    summary: "Unusual health check request rate"
+    description: "Health endpoint receiving {{ $value }} req/s"
+```
+
+### Configuration Recommendations by Environment
+
+| Environment | Database Checks | Version Display | Network Restriction | Auth Required |
+|------------|----------------|-----------------|-------------------|---------------|
+| **Development** | ✅ Enabled | Exact version | None | No |
+| **Staging** | ✅ Enabled | Exact version | VPN/Internal only | Optional |
+| **Production** | ⚠️ Depends on needs | Generic (e.g., "2.x") | Firewall/SG rules | Recommended for `/health` |
+| **High Security** | ❌ Disabled for public | Build hash only | Strict whitelist | Required |
+
+### Implementation Checklist
+
+Use this checklist when deploying to production:
+
+- [ ] **Network Security**
+  - [ ] Configure firewall rules to restrict health endpoint access
+  - [ ] Set up security groups (AWS/GCP) or network policies (Kubernetes)
+  - [ ] Verify load balancer can still access `/health/ready`
+  - [ ] Confirm Kubernetes kubelet can access `/health/live`
+
+- [ ] **Configuration**
+  - [ ] Review `database_check_enabled` setting for production
+  - [ ] Set generic version number if needed
+  - [ ] Configure appropriate health check timeouts
+  - [ ] Disable verbose error messages in production
+
+- [ ] **Monitoring**
+  - [ ] Set up alerts for health endpoint failures
+  - [ ] Monitor for unusual access patterns
+  - [ ] Log health check failures for investigation
+  - [ ] Track response times for performance issues
+
+- [ ] **Documentation**
+  - [ ] Document security decisions for your deployment
+  - [ ] Update runbooks with health endpoint access procedures
+  - [ ] Train operations team on health check security
+
+- [ ] **Testing**
+  - [ ] Verify health checks work from authorized sources
+  - [ ] Confirm unauthorized access is blocked
+  - [ ] Test Kubernetes liveness/readiness probe functionality
+  - [ ] Validate load balancer health check integration
+
+### Common Security Questions
+
+#### "Should I add authentication to health endpoints?"
+
+**Generally No** for `/health/live` and `/health/ready` because:
+- Container orchestration platforms (Kubernetes) can't easily provide credentials
+- Load balancers expect unauthenticated health checks
+- Network-level security is more maintainable
+
+**Consider Yes** for:
+- Detailed monitoring endpoints (e.g., `/health/metrics`)
+- Compliance requirements (PCI-DSS, HIPAA)
+- High-value targets with sophisticated threat models
+
+#### "Is it safe to expose database response times?"
+
+**Depends on context:**
+- **Low Risk**: Internal APIs, development environments
+- **Medium Risk**: Public APIs with rate limiting and monitoring
+- **High Risk**: Financial systems, healthcare, government
+
+**Mitigation**: Disable database checks in public-facing endpoints:
+```yaml
+health:
+  database_check_enabled: false
+```
+
+#### "What about DDoS attacks on health endpoints?"
+
+**Already Mitigated** - Health endpoints are subject to the global rate limiter:
+```yaml
+ratelimit:
+  enabled: true
+  window: 60        # seconds
+  requests: 100     # max requests per window
+```
+
+Health checks are also excluded from logging to prevent log flooding.
+
+#### "Should I use HTTPS for health checks?"
+
+**Best Practice: Yes** - Always use HTTPS in production:
+- Prevents man-in-the-middle attacks
+- Protects information in transit
+- Required for compliance (PCI-DSS, HIPAA)
+
+Configure Kubernetes probes with HTTPS:
+```yaml
+livenessProbe:
+  httpGet:
+    path: /health/live
+    port: 8080
+    scheme: HTTPS  # Use HTTPS
+```
+
+### Trade-offs: Security vs Observability
+
+Finding the right balance:
+
+| Approach | Security | Observability | Maintenance |
+|----------|----------|---------------|-------------|
+| **Fully Public** | Low | High | Easy |
+| **Network-Restricted** | Medium | High | Medium |
+| **Auth Required** | High | Medium | Complex |
+| **No Health Checks** | Highest | None | N/A |
+
+**Recommended for Most Cases**: Network-restricted with public liveness/readiness probes.
+
+### Additional Resources
+
+- [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
+- [Kubernetes Security Best Practices](https://kubernetes.io/docs/concepts/security/security-checklist/)
+- [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
+- [CIS Docker Benchmark](https://www.cisecurity.org/benchmark/docker)
+
 ## Kubernetes Integration
 
 ### Deployment Configuration
