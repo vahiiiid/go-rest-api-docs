@@ -2,6 +2,9 @@
 
 GRAB implements a comprehensive structured error handling system that provides consistent, machine-readable error responses across the entire API.
 
+!!! info "API Response Format"
+    All API responses use a standardized envelope format. See the [API Response Format](API_RESPONSE_FORMAT.md) guide for complete details.
+
 ## Overview
 
 The error handling system consists of three main components:
@@ -9,24 +12,39 @@ The error handling system consists of three main components:
 1. **Error Types** (`internal/errors/errors.go`) - Structured error definitions
 2. **Error Codes** (`internal/errors/codes.go`) - Machine-readable error constants
 3. **Error Middleware** (`internal/errors/middleware.go`) - Centralized error processing
+4. **Response Envelope** (`internal/errors/response.go`) - Standardized response wrapper
 
 ## Error Response Structure
 
-All API errors follow a consistent JSON structure:
+All API errors follow a consistent JSON structure wrapped in a response envelope:
 
 ```json
 {
-  "code": "ERROR_CODE",
-  "message": "Human-readable error message",
-  "details": "Optional additional context"
+  "success": false,
+  "error": {
+    "code": "ERROR_CODE",
+    "message": "Human-readable error message",
+    "details": "Optional additional context",
+    "timestamp": "2024-11-13T20:00:00Z",
+    "path": "/api/v1/endpoint",
+    "request_id": "req_abc123"
+  }
 }
 ```
 
-### Fields
+### Response Fields
+
+- **`success`** (boolean, required): Always `false` for error responses
+- **`error`** (object, required): Contains detailed error information
+
+### Error Object Fields
 
 - **`code`** (string, required): Machine-readable error code for client-side error handling
 - **`message`** (string, required): Human-readable error description
 - **`details`** (any, optional): Additional error context (e.g., validation field errors, debug information)
+- **`timestamp`** (string, required): ISO 8601 timestamp when error occurred
+- **`path`** (string, required): API endpoint path where error occurred
+- **`request_id`** (string, required): Unique request identifier for troubleshooting
 
 ## Error Codes
 
@@ -48,8 +66,14 @@ GRAB defines the following standard error codes:
 
 ```json
 {
-  "code": "NOT_FOUND",
-  "message": "User not found"
+  "success": false,
+  "error": {
+    "code": "NOT_FOUND",
+    "message": "User not found",
+    "timestamp": "2024-11-13T20:00:00Z",
+    "path": "/api/v1/users/999",
+    "request_id": "req_abc123"
+  }
 }
 ```
 
@@ -63,11 +87,17 @@ curl -X GET http://localhost:8080/api/v1/users/999 \
 
 ```json
 {
-  "code": "VALIDATION_ERROR",
-  "message": "Validation failed",
-  "details": {
-    "Email": "Email must be a valid email address",
-    "Password": "Password is too short (minimum 6)"
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Validation failed",
+    "details": {
+      "Email": "Email must be a valid email address",
+      "Password": "Password is too short (minimum 6)"
+    },
+    "timestamp": "2024-11-13T20:00:00Z",
+    "path": "/api/v1/auth/register",
+    "request_id": "req_def456"
   }
 }
 ```
@@ -87,8 +117,14 @@ curl -X POST http://localhost:8080/api/v1/auth/register \
 
 ```json
 {
-  "code": "UNAUTHORIZED",
-  "message": "Invalid email or password"
+  "success": false,
+  "error": {
+    "code": "UNAUTHORIZED",
+    "message": "Invalid email or password",
+    "timestamp": "2024-11-13T20:00:00Z",
+    "path": "/api/v1/auth/login",
+    "request_id": "req_ghi789"
+  }
 }
 ```
 
@@ -106,8 +142,14 @@ curl -X POST http://localhost:8080/api/v1/auth/login \
 
 ```json
 {
-  "code": "FORBIDDEN",
-  "message": "Forbidden user ID"
+  "success": false,
+  "error": {
+    "code": "FORBIDDEN",
+    "message": "Forbidden user ID",
+    "timestamp": "2024-11-13T20:00:00Z",
+    "path": "/api/v1/users/5",
+    "request_id": "req_jkl012"
+  }
 }
 ```
 
@@ -122,8 +164,14 @@ curl -X GET http://localhost:8080/api/v1/users/5 \
 
 ```json
 {
-  "code": "CONFLICT",
-  "message": "Email already exists"
+  "success": false,
+  "error": {
+    "code": "CONFLICT",
+    "message": "Email already exists",
+    "timestamp": "2024-11-13T20:00:00Z",
+    "path": "/api/v1/auth/register",
+    "request_id": "req_mno345"
+  }
 }
 ```
 
@@ -142,10 +190,19 @@ curl -X POST http://localhost:8080/api/v1/auth/register \
 
 ```json
 {
-  "code": "TOO_MANY_REQUESTS",
-  "message": "Rate limit exceeded",
-  "details": "Too many requests. Please try again in 60 seconds.",
-  "retry_after": 60
+  "success": false,
+  "error": {
+    "code": "TOO_MANY_REQUESTS",
+    "message": "Rate limit exceeded",
+    "details": {
+      "retry_after": 60,
+      "limit": 10,
+      "window": "1m"
+    },
+    "timestamp": "2024-11-13T20:00:00Z",
+    "path": "/api/v1/auth/login",
+    "request_id": "req_pqr678"
+  }
 }
 ```
 
@@ -170,9 +227,15 @@ X-RateLimit-Reset: 1698765432
 
 ```json
 {
-  "code": "INTERNAL_ERROR",
-  "message": "Internal server error",
-  "details": "database connection failed"
+  "success": false,
+  "error": {
+    "code": "INTERNAL_ERROR",
+    "message": "Internal server error",
+    "details": "database connection failed",
+    "timestamp": "2024-11-13T20:00:00Z",
+    "path": "/api/v1/users",
+    "request_id": "req_stu901"
+  }
 }
 ```
 
