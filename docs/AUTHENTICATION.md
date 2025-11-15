@@ -4,6 +4,9 @@
 
 GRAB implements a secure, production-ready authentication system using **OAuth 2.0 Best Current Practice (BCP) compliant** JWT refresh token rotation with automatic reuse detection. This approach provides enhanced security while maintaining excellent user experience.
 
+!!! info "API Response Format"
+    All API responses use a standardized envelope format. See the [API Response Format](API_RESPONSE_FORMAT.md) guide for complete details.
+
 ## Key Features
 
 - **Token Pair Authentication**: Access tokens (short-lived) + Refresh tokens (long-lived)
@@ -49,15 +52,18 @@ Content-Type: application/json
 
 ```json
 {
-  "user": {
-    "id": 1,
-    "email": "user@example.com",
-    "name": "John Doe"
-  },
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "refresh_token": "8f7a3c2b1e9d4a5f6c8b7e3a2f1d9c8b...",
-  "token_type": "Bearer",
-  "expires_in": 900
+  "success": true,
+  "data": {
+    "user": {
+      "id": 1,
+      "email": "user@example.com",
+      "name": "John Doe"
+    },
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "8f7a3c2b1e9d4a5f6c8b7e3a2f1d9c8b...",
+    "token_type": "Bearer",
+    "expires_in": 900
+  }
 }
 ```
 
@@ -115,10 +121,13 @@ Content-Type: application/json
 
 ```json
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "refresh_token": "9a8b7c6d5e4f3a2b1c9d8e7f6a5b4c3d...",
-  "token_type": "Bearer",
-  "expires_in": 900
+  "success": true,
+  "data": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "9a8b7c6d5e4f3a2b1c9d8e7f6a5b4c3d...",
+    "token_type": "Bearer",
+    "expires_in": 900
+  }
 }
 ```
 
@@ -144,7 +153,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ```json
 {
-  "message": "Successfully logged out"
+  "success": true,
+  "data": {
+    "message": "Successfully logged out"
+  }
 }
 ```
 
@@ -303,15 +315,18 @@ jwt:
 
 ```json
 {
-  "user": {
-    "id": "integer",
-    "email": "string",
-    "name": "string"
-  },
-  "access_token": "string (JWT)",
-  "refresh_token": "string (random 32 bytes, hex)",
-  "token_type": "Bearer",
-  "expires_in": "integer (seconds)"
+  "success": true,
+  "data": {
+    "user": {
+      "id": "integer",
+      "email": "string",
+      "name": "string"
+    },
+    "access_token": "string (JWT)",
+    "refresh_token": "string (random 32 bytes, hex)",
+    "token_type": "Bearer",
+    "expires_in": "integer (seconds)"
+  }
 }
 ```
 
@@ -354,10 +369,13 @@ jwt:
 
 ```json
 {
-  "access_token": "string (JWT)",
-  "refresh_token": "string (new token)",
-  "token_type": "Bearer",
-  "expires_in": "integer (seconds)"
+  "success": true,
+  "data": {
+    "access_token": "string (JWT)",
+    "refresh_token": "string (new token)",
+    "token_type": "Bearer",
+    "expires_in": "integer (seconds)"
+  }
 }
 ```
 
@@ -378,7 +396,10 @@ Requires `Authorization: Bearer <access_token>` header
 
 ```json
 {
-  "message": "Successfully logged out"
+  "success": true,
+  "data": {
+    "message": "Successfully logged out"
+  }
 }
 ```
 
