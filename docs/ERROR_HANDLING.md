@@ -342,6 +342,11 @@ interface APIError {
   details?: any;
 }
 
+interface ErrorResponse {
+  success: false;
+  error: APIError;
+}
+
 async function loginUser(email: string, password: string) {
   try {
     const response = await fetch('/api/v1/auth/login', {
@@ -351,7 +356,8 @@ async function loginUser(email: string, password: string) {
     });
     
     if (!response.ok) {
-      const error: APIError = await response.json();
+      const errorResponse: ErrorResponse = await response.json();
+      const error = errorResponse.error;
       
       switch (error.code) {
         case 'UNAUTHORIZED':
@@ -412,7 +418,8 @@ def login_user(email: str, password: str) -> Optional[Dict]:
         )
         
         if not response.ok:
-            error_data = response.json()
+            error_response = response.json()
+            error_data = error_response['error']
             raise APIError(
                 code=error_data['code'],
                 message=error_data['message'],
@@ -458,6 +465,11 @@ func (e *APIError) Error() string {
     return e.Message
 }
 
+type ErrorResponse struct {
+    Success bool     `json:"success"`
+    Error   APIError `json:"error"`
+}
+
 func LoginUser(email, password string) (*AuthResponse, error) {
     payload := map[string]string{
         "email":    email,
@@ -476,11 +488,12 @@ func LoginUser(email, password string) (*AuthResponse, error) {
     defer resp.Body.Close()
     
     if resp.StatusCode != http.StatusOK {
-        var apiErr APIError
-        if err := json.NewDecoder(resp.Body).Decode(&apiErr); err != nil {
+        var errResp ErrorResponse
+        if err := json.NewDecoder(resp.Body).Decode(&errResp); err != nil {
             return nil, fmt.Errorf("failed to parse error: %w", err)
         }
         
+        apiErr := errResp.Error
         switch apiErr.Code {
         case "UNAUTHORIZED":
             return nil, fmt.Errorf("invalid credentials")
