@@ -249,6 +249,59 @@ CREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);
 CREATE INDEX idx_refresh_tokens_expires_at ON refresh_tokens(expires_at);
 ```
 
+### JWT Claims Structure
+
+**Access tokens** are JWTs that contain user information and roles in the payload. The token payload (claims) includes:
+
+```json
+{
+  "user_id": 1,
+  "email": "user@example.com",
+  "name": "John Doe",
+  "roles": ["user"],
+  "exp": 1700000000,
+  "iat": 1699996400
+}
+```
+
+**Claims Description:**
+
+| Claim | Type | Description |
+|-------|------|-------------|
+| `user_id` | integer | Unique user identifier |
+| `email` | string | User's email address |
+| `name` | string | User's display name |
+| `roles` | string[] | Array of role names (e.g., ["user", "admin"]) |
+| `exp` | integer | Token expiration timestamp (Unix) |
+| `iat` | integer | Token issued at timestamp (Unix) |
+
+**Role-Based Access:**
+
+The `roles` claim is populated automatically based on the user's assigned roles in the database:
+
+- New users get `["user"]` by default
+- Admins have `["user", "admin"]`
+- Custom roles can be added (e.g., `["user", "moderator"]`)
+
+The API validates roles on every request to protected endpoints. See [RBAC](RBAC.md) for complete role management documentation.
+
+**Decoding Tokens:**
+
+Access tokens can be decoded on the client to extract user info and roles without making an API call:
+
+```javascript
+// Browser (using jwt-decode library)
+import jwtDecode from 'jwt-decode';
+
+const decoded = jwtDecode(accessToken);
+console.log(decoded.roles); // ["user", "admin"]
+```
+
+!!! warning "Token Security"
+    - Access tokens are signed but NOT encrypted - don't store sensitive data in claims
+    - Always validate tokens server-side - never trust client-side validation alone
+    - Roles in JWT are cached until token expires - role changes require re-login
+
 ## Configuration
 
 ### Environment Variables

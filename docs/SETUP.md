@@ -71,7 +71,41 @@ curl -X POST http://localhost:8080/api/v1/auth/register \
     "email": "alice@example.com",
     "password": "secret123"
   }'
+
+# Create an admin user (interactive)
+make create-admin
 ```
+
+### Create Your First Admin User 👤
+
+After the initial setup, create an admin user for administrative tasks:
+
+```bash
+# Interactive mode (recommended for first admin)
+make create-admin
+
+# Or promote an existing user by ID
+make promote-admin ID=1
+```
+
+**Example interactive session:**
+
+```text
+$ make create-admin
+Enter admin email: admin@example.com
+Enter admin name: Admin User
+Enter admin password: ********
+Confirm password: ********
+
+✅ Admin user created successfully:
+ID: 1
+Email: admin@example.com
+Name: Admin User
+Roles: admin, user
+```
+
+!!! tip "Admin Access"
+    Admins can access all endpoints including `GET /api/v1/users` to list all users. See [RBAC](RBAC.md) for complete role documentation.
 
 ### Explore Your API 🔍
 

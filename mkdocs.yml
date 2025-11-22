@@ -138,6 +138,7 @@ nav:
   - Testing: TESTING.md
   - API Features:
       - Authentication & JWT: AUTHENTICATION.md
+      - Role-Based Access Control: RBAC.md
       - API Response Format: API_RESPONSE_FORMAT.md
       - Error Handling: ERROR_HANDLING.md
       - Rate Limiting: RATE_LIMITING.md

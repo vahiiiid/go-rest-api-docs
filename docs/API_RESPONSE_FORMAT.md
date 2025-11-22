@@ -285,7 +285,8 @@ Content-Type: application/json
     "user": {
       "id": 1,
       "email": "john.doe@example.com",
-      "name": "John Doe"
+      "name": "John Doe",
+      "roles": ["user"]
     },
     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "refresh_token": "8f7a3c2b1e9d4a5f6c8b7e3a2f1d9c8b...",
@@ -316,7 +317,8 @@ Content-Type: application/json
     "user": {
       "id": 1,
       "email": "john.doe@example.com",
-      "name": "John Doe"
+      "name": "John Doe",
+      "roles": ["user"]
     },
     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "refresh_token": "8f7a3c2b1e9d4a5f6c8b7e3a2f1d9c8b...",
