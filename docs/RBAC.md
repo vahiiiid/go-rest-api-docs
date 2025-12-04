@@ -368,8 +368,8 @@ The roles table is automatically seeded with default roles during migration:
 
 ```sql
 INSERT INTO roles (id, name, description) VALUES
-(1, 'user', 'Standard user role with basic permissions'),
-(2, 'admin', 'Administrator role with full system access');
+(1, 'user', 'Standard user with basic permissions'),
+(2, 'admin', 'Administrator with full system access');
 ```
 
 ## Security Considerations
