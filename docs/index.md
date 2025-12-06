@@ -7,14 +7,14 @@
 <p><em>Grab it and Go &mdash; a clean, production-ready REST API starter kit in Go with JWT, PostgreSQL, Docker, and Swagger.</em></p>
 
 <p>
-<img src="https://img.shields.io/badge/version-1.1.0-blue.svg" alt="Version">
+<img src="https://img.shields.io/badge/version-2.0.0-blue.svg" alt="Version">
 <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
 <img src="https://img.shields.io/badge/Go-1.24+-00ADD8?logo=go" alt="Go Version">
 </p>
 
 <p>
 <a href="https://github.com/vahiiiid/go-rest-api-boilerplate">🚀 Main Repository</a> | 
-<a href="https://github.com/vahiiiid/go-rest-api-boilerplate/releases/tag/v1.1.0">📋 Latest Release</a> | 
+<a href="https://github.com/vahiiiid/go-rest-api-boilerplate/releases/tag/v2.0.0">📋 Latest Release</a> | 
 <a href="https://github.com/vahiiiid/go-rest-api-boilerplate/issues">🐛 Report Issues</a>
 </p>
 
