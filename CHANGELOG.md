@@ -7,6 +7,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Note**: This changelog tracks documentation changes. For API/code changes, see the [main repository changelog](https://github.com/vahiiiid/go-rest-api-boilerplate/blob/main/CHANGELOG.md).
 
+## [2.0.0] - 2025-12-06
+
+### Added
+- ✨ **RBAC Documentation** (`docs/RBAC.md`) - Comprehensive Role-Based Access Control guide
+  - Many-to-many architecture explanation
+  - Admin CLI usage and security
+  - Middleware and context helpers
+  - JWT integration details
+  - API examples and troubleshooting
+  
+- ✨ **Authentication Updates** - Refresh token system documentation
+  - OAuth 2.0 BCP compliance details
+  - Token rotation flow diagrams
+  - Reuse detection scenarios
+  - Token family tracking explanation
+  - Security architecture
+  
+- ✨ **Health Checks Guide** (`docs/HEALTH_CHECKS.md`) - Production-grade health check documentation
+  - Three-endpoint system (/health, /health/live, /health/ready)
+  - Kubernetes integration examples
+  - Docker Compose configuration
+  - Load balancer setup
+  - Monitoring integration
+  - RFC-compliant response format
+  
+- ✨ **API Response Format Guide** - Standardized envelope format documentation
+- ✨ **Error Handling Guide** - Structured error codes and consistent responses
+- ✨ **Graceful Shutdown Guide** - Zero-downtime deployment strategies
+- ✨ **Context Helpers Reference** - RBAC helper functions (HasRole, IsAdmin, GetRoles)
+
+### Changed
+- Updated all documentation to reflect v2.0.0 features
+- Updated code examples with new API response format
+- Enhanced security best practices sections
+- Improved quick reference with new endpoints
+- Updated architecture diagrams
+
+### Fixed
+- Corrected version references throughout documentation
+- Updated Postman collection screenshots
+- Updated Swagger UI screenshots
+- Fixed outdated API endpoint examples
+
+---
+
 ## [1.2.0] - 2025-01-15
 
 ### Added

@@ -11,7 +11,7 @@ Official documentation repository for the [Go REST API Boilerplate (GRAB)](https
 
 Complete, searchable documentation with dark mode, mobile-friendly navigation, and instant search.
 
-**Current Version**: v1.0.0 - Matches [GRAB v1.0.0](https://github.com/vahiiiid/go-rest-api-boilerplate/releases/tag/v1.0.0)
+**Current Version**: v2.0.0 - Matches [GRAB v2.0.0](https://github.com/vahiiiid/go-rest-api-boilerplate/releases/tag/v2.0.0)
 
 ## 📖 Contents
 
