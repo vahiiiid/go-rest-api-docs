@@ -104,18 +104,73 @@ if !contextutil.CanAccessUser(c, uint(id)) {
 }
 ```
 
+### Role-Based Access Control
+
 #### `HasRole(c *gin.Context, role string) bool`
-Checks if the user has a specific role (placeholder for future RBAC implementation).
+Checks if the authenticated user has a specific role.
 
 ```go
 if !contextutil.HasRole(c, "admin") {
     c.JSON(http.StatusForbidden, gin.H{"error": "Insufficient permissions"})
     return
 }
+
+// Check for custom roles
+if contextutil.HasRole(c, "moderator") {
+    // Moderator-specific logic
+}
 ```
 
-!!! note "Future RBAC Support"
-    The `HasRole` function is currently a placeholder that returns `false`. It will be implemented when role-based access control is added to the system.
+#### `IsAdmin(c *gin.Context) bool`
+Convenience function to check if the user has admin role.
+
+```go
+if contextutil.IsAdmin(c) {
+    // Admin-specific functionality
+    adminData := fetchAdminDashboard()
+    c.JSON(http.StatusOK, adminData)
+    return
+}
+```
+
+#### `GetRoles(c *gin.Context) []string`
+Retrieves all roles assigned to the authenticated user.
+
+```go
+roles := contextutil.GetRoles(c)
+// Returns: ["user"], ["user", "admin"], or []
+
+// Example: Display user roles
+c.JSON(http.StatusOK, gin.H{
+    "user_id": contextutil.GetUserID(c),
+    "roles":   roles,
+})
+```
+
+**Integration with Middleware:**
+
+The RBAC context helpers work seamlessly with the authorization middleware:
+
+```go
+// In router.go - protecting admin endpoints
+adminGroup := v1.Group("/admin")
+adminGroup.Use(auth.AuthMiddleware(authService), middleware.RequireAdmin())
+{
+    adminGroup.GET("/users", userHandler.ListUsers)
+}
+
+// In handlers - conditional logic based on roles
+func (h *Handler) GetUser(c *gin.Context) {
+    if contextutil.IsAdmin(c) {
+        // Admins can see all fields
+        return fullUserProfile
+    }
+    // Regular users see limited fields
+    return basicUserProfile
+}
+```
+
+See [RBAC Guide](RBAC.md) for complete role management documentation.
 
 ## 🔄 Code Transformation
 
@@ -361,7 +416,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 
 The Context Helpers package is designed for extensibility:
 
-- **Role-Based Access Control (RBAC)**: `HasRole` function ready for implementation
+- **Role-Based Access Control (RBAC)**: ✅ Fully implemented with `HasRole`, `IsAdmin`, and `GetRoles` functions
 - **Permission System**: Extensible for complex permission checks
 - **Multi-tenant Support**: Ready for tenant-based access control
 - **Audit Logging**: Easy integration with user context information

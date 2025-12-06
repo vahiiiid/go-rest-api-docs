@@ -68,6 +68,10 @@ That's it. You get a fully configured, battle-tested REST API with:
   
     Complete CRUD operations with validation and error handling
 
+- :material-shield-account: **Role-Based Access Control**
+  
+    Many-to-many role system with JWT integration, secure admin CLI, and middleware-based endpoint protection
+
 - :material-database: **PostgreSQL + GORM**
   
     Robust database with powerful ORM and automated migrations
