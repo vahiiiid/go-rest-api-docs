@@ -99,6 +99,120 @@ node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
 
 ---
 
+## 🔐 RBAC Security Best Practices
+
+### Admin Account Management
+
+#### Principle of Least Privilege
+
+- **Minimize admin accounts**: Only promote trusted users to admin role
+- **Regular audits**: Review admin accounts quarterly
+- **Immediate revocation**: Remove admin privileges when no longer needed
+- **Separation of duties**: Use specialized roles instead of blanket admin access where possible
+
+#### Secure Admin Creation
+
+```bash
+# Always use the CLI - never hardcode credentials
+make create-admin
+
+# Promote existing users only after verification
+make promote-admin ID=<user_id>
+```
+
+**Never:**
+- ❌ Hardcode admin credentials in code or environment files
+- ❌ Use default/shared admin passwords
+- ❌ Create admins through API endpoints (no admin creation API exists by design)
+- ❌ Store admin credentials in version control
+
+### Role Assignment Security
+
+#### Token-Based Role Validation
+
+Roles are embedded in JWT tokens and validated on every request:
+
+1. **Stateless validation**: No database lookup required for role checks
+2. **Token expiration**: Roles cached only until token expires (15 minutes default)
+3. **Re-authentication required**: Role changes require user to login again
+4. **Atomic operations**: Role assignments use database transactions
+
+#### Protection Against Role Elevation
+
+```go
+// ✅ Good: Middleware enforces role requirements
+adminGroup.Use(middleware.RequireAdmin())
+
+// ❌ Bad: Manual role checks can be bypassed
+if user.Email == "admin@example.com" {
+    // Fragile and insecure
+}
+```
+
+### Database-Level Security
+
+#### Role Integrity
+
+- **Foreign keys**: Ensure referential integrity between users and roles
+- **Composite primary keys**: Prevent duplicate role assignments
+- **CASCADE deletes**: Automatically clean up role assignments when users/roles deleted
+- **Seeded roles**: Default roles (user, admin) inserted via migrations, not application code
+
+#### Audit Logging Recommendations
+
+While GRAB includes structured logging, consider adding admin action auditing:
+
+```go
+// Log admin actions for security monitoring
+log.Info().
+    Uint("admin_id", contextutil.GetUserID(c)).
+    Str("action", "delete_user").
+    Uint("target_user_id", targetID).
+    Msg("Admin action performed")
+```
+
+### Production Deployment Checklist
+
+Before deploying RBAC to production:
+
+- [ ] All admin accounts created through secure CLI process
+- [ ] Admin passwords meet strength requirements (8+ chars, mixed case, numbers, symbols)
+- [ ] JWT secrets rotated and unique per environment
+- [ ] Database connections use SSL (`sslmode: require`)
+- [ ] Admin actions monitored in application logs
+- [ ] Regular security audits scheduled (quarterly recommended)
+- [ ] Backup admin account created and credentials stored securely
+- [ ] Role assignment process documented for your team
+
+### Token Security with Roles
+
+#### Refresh Token Rotation
+
+When users receive new roles, they must obtain a new access token:
+
+```bash
+# After promoting user to admin
+POST /api/v1/auth/refresh
+# User's new access token will contain updated roles
+```
+
+#### Token Leakage Mitigation
+
+- **Short-lived access tokens**: 15 minutes default (configurable)
+- **Refresh token rotation**: New refresh token issued on each refresh
+- **Token family tracking**: Detects refresh token reuse attacks
+- **Immediate invalidation**: Logout revokes all tokens for user
+
+See [Authentication Guide](AUTHENTICATION.md) for complete token security details.
+
+### Related Security Documentation
+
+- [RBAC Guide](RBAC.md) - Role management and implementation
+- [Authentication](AUTHENTICATION.md) - JWT security and token management
+- [Configuration](CONFIGURATION.md) - Secure environment variable handling
+
+---
+
 ## 📝 Environment Configuration
 
 ### .env File Setup

@@ -248,6 +248,7 @@ migrate -path migrations \
 POST /api/v1/auth/register
 Body: {"name": "string", "email": "string", "password": "string"}
 Returns: {user, access_token, refresh_token, token_type, expires_in}
+Note: New users automatically get "user" role
 
 # Login
 POST /api/v1/auth/login
@@ -259,6 +260,10 @@ POST /api/v1/auth/refresh
 Body: {"refresh_token": "string"}
 Returns: {access_token, refresh_token, token_type, expires_in}
 
+# Get Current User Profile (Requires Bearer Token)
+GET /api/v1/auth/me
+Returns: {user with roles}
+
 # Logout (Requires Bearer Token)
 POST /api/v1/auth/logout
 Revokes all refresh tokens for the authenticated user
@@ -266,16 +271,30 @@ Revokes all refresh tokens for the authenticated user
 
 ### Users (Protected - Requires Bearer Token)
 ```bash
+# List all users (Admin only)
+GET /api/v1/users
+Query params: ?page=1&per_page=20&role=user&search=john&sort=created_at&order=desc
+Returns: {users[], total, page, per_page, total_pages}
+
 # Get user by ID
 GET /api/v1/users/:id
+Access: Users can view own profile, admins can view any profile
 
 # Update user
 PUT /api/v1/users/:id
 Body: {"name": "string", "email": "string"}
+Access: Users can update own profile, admins can update any profile
 
 # Delete user
 DELETE /api/v1/users/:id
+Access: Users can delete own account, admins can delete any account
 ```
+
+!!! info "RBAC Roles"
+    - **user**: Standard user with basic access (auto-assigned on registration)
+    - **admin**: Administrator with elevated access (CLI-only promotion)
+    
+    See [RBAC Guide](RBAC.md) for complete role documentation.
 
 ### Health Check Endpoints (Public)
 
