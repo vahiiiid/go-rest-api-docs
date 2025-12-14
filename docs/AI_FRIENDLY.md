@@ -52,8 +52,8 @@ AI assistants understand:
 - **Domain Structure**: `internal/<domain>/` with model, dto, repository, service, handler
 - **Migration Naming**: `YYYYMMDDHHMMSS_verb_noun_table`
 - **Testing Conventions**: Table-driven tests with mocks
-- **Error Handling**: Centralized `errors.HandleError()` and `errors.HandleValidationError()`
-- **Context Helpers**: `contextutil.GetUserID()`, `contextutil.GetUserEmail()`, etc.
+- **Error Handling**: Centralized `c.Error(apiErrors.FromGinValidation(err))` pattern with constructor functions
+- **Context Helpers**: `contextutil.GetUserID()`, `contextutil.GetEmail()`, `contextutil.GetRoles()`, etc.
 
 ### 4. **Documentation Integration**
 
