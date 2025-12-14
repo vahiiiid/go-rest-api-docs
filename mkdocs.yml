@@ -126,6 +126,7 @@ nav:
   - Home: index.md
   - Getting Started:
       - Setup Guide: SETUP.md
+      - AI-Friendly Development: AI_FRIENDLY.md
       - Configuration Guide: CONFIGURATION.md
       - Security Guide: SECURITY_GUIDE.md
       - Quick Reference: QUICK_REFERENCE.md
