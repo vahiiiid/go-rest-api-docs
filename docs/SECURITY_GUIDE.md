@@ -471,4 +471,4 @@ If you have security concerns or questions:
 
 1. **Security Issues:** Report via [GitHub Security Advisories](https://github.com/vahiiiid/go-rest-api-boilerplate/security/advisories)
 2. **General Questions:** Open an [issue](https://github.com/vahiiiid/go-rest-api-boilerplate/issues)
-3. **Documentation:** Check [full documentation](https://vahiiiid.github.io/go-rest-api-docs/)
+3. **Documentation:** Check [full documentation](https://grabapi.dev/docs/)

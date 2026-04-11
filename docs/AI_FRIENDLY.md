@@ -577,7 +577,7 @@ AI will mirror the proven patterns from the user domain.
 
 ## 🔗 Additional Resources
 
-- **Main Documentation**: [GRAB Docs](https://vahiiiid.github.io/go-rest-api-docs/)
+- **Main Documentation**: [GRAB Docs](https://grabapi.dev/docs/)
 - **Development Guide**: [Development Guide](DEVELOPMENT_GUIDE.md)
 - **Quick Reference**: [Quick Reference](QUICK_REFERENCE.md)
 - **Testing Guide**: [Testing](TESTING.md)

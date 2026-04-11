@@ -2,12 +2,14 @@
 
 Official documentation repository for the [Go REST API Boilerplate (GRAB)](https://github.com/vahiiiid/go-rest-api-boilerplate) project.
 
-[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://vahiiiid.github.io/go-rest-api-docs/)
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://grabapi.dev/docs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 🌐 View Documentation
 
-**🔗 Live Site:** https://vahiiiid.github.io/go-rest-api-docs/
+**🔗 Official Website:** https://grabapi.dev/
+
+**📚 Documentation:** https://grabapi.dev/docs/
 
 Complete, searchable documentation with dark mode, mobile-friendly navigation, and instant search.
 
@@ -174,30 +176,21 @@ Contributions to the documentation are welcome! Please:
 
 ## 🚀 Deployment
 
-Documentation is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
+Documentation is served at `https://grabapi.dev/docs/` via the landing site's Cloudflare Pages build.
 
 ### Deployment Workflow
 
-1. Push changes to `main` branch
-2. GitHub Actions triggers automatically
-3. MkDocs builds the static site
-4. Site deploys to `gh-pages` branch
-5. GitHub Pages serves the updated site
+1. Push changes to `main` in this docs repository
+2. Trigger a new deploy for `grabapi-landing` in Cloudflare Pages (or via deploy hook)
+3. Build script pulls latest docs and publishes to `/docs`
 
 Deployment typically takes 2-3 minutes.
-
-### Manual Deployment
-
-If needed, you can deploy manually:
-
-```bash
-mkdocs gh-deploy --force
-```
 
 ## 🔗 Links
 
 - **Main Repository:** https://github.com/vahiiiid/go-rest-api-boilerplate
-- **Documentation Site:** https://vahiiiid.github.io/go-rest-api-docs/
+- **Official Website:** https://grabapi.dev/
+- **Documentation Site:** https://grabapi.dev/docs/
 - **Report Issues:** https://github.com/vahiiiid/go-rest-api-docs/issues
 - **Code Issues:** https://github.com/vahiiiid/go-rest-api-boilerplate/issues
 

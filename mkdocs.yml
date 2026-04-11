@@ -106,6 +106,9 @@ extra:
     provider: mike
     default: stable
   social:
+    - icon: fontawesome/solid/globe
+      link: https://grabapi.dev/
+      name: Official Website
     - icon: fontawesome/brands/github
       link: https://github.com/vahiiiid/go-rest-api-boilerplate
       name: Main Repository

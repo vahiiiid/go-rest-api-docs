@@ -4,9 +4,9 @@ This project uses [MkDocs](https://www.mkdocs.org/) with the [Material theme](ht
 
 ## 🌐 Live Documentation
 
-**🔗 https://vahiiiid.github.io/go-rest-api-boilerplate/**
+**🔗 https://grabapi.dev/docs/**
 
-The documentation is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
+The documentation is published at `/docs` through the landing site's Cloudflare Pages deployment.
 
 ## 🛠️ Local Development
 
@@ -211,14 +211,11 @@ Workflow file: `.github/workflows/docs.yml`
 
 ### Manual Deployment
 
-If needed, you can manually deploy:
+If needed, manually trigger a new Cloudflare Pages deployment for the landing project.
 
 ```bash
-# Deploy to GitHub Pages
-mkdocs gh-deploy --force
-
-# Or trigger the GitHub Action manually
-gh workflow run docs.yml
+# Push docs changes, then in Cloudflare Pages
+# open grabapi-landing project and click "Retry deployment"
 ```
 
 ## 🔧 Configuration
@@ -289,7 +286,7 @@ mkdocs build --strict
 - [MkDocs Documentation](https://www.mkdocs.org/)
 - [Material Theme](https://squidfunk.github.io/mkdocs-material/)
 - [Markdown Guide](https://www.markdownguide.org/)
-- [GitHub Pages](https://pages.github.com/)
+- [Cloudflare Pages](https://developers.cloudflare.com/pages/)
 
 ## ✅ Checklist for Documentation Changes
 
