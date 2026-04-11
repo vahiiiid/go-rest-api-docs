@@ -518,7 +518,7 @@ GRAB includes a comprehensive migration test script:
 
 - **[golang-migrate Documentation](https://github.com/golang-migrate/migrate)** - Official docs
 - **[Migration Testing Script](https://github.com/vahiiiid/go-rest-api-boilerplate/blob/main/scripts/test-migrations.sh)** - Automated testing
-- **[GRAB Documentation](https://vahiiiid.github.io/go-rest-api-docs/)** - Full project docs
+- **[GRAB Documentation](https://grabapi.dev/docs/)** - Full project docs
 
 ### Questions or Issues?
 
