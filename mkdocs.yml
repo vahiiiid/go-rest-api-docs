@@ -1,7 +1,7 @@
 site_name: Go REST API Boilerplate (GRAB) - Documentation
 site_description: Comprehensive documentation for Go REST API Boilerplate — setup guides, architecture overview, API references, and deployment instructions
 site_author: vahiiiid
-site_url: https://vahiiiid.github.io/go-rest-api-docs/
+site_url: https://grabapi.dev/docs/
 repo_url: https://github.com/vahiiiid/go-rest-api-docs
 repo_name: vahiiiid/go-rest-api-docs
 edit_uri: edit/main/docs/

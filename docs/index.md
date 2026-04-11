@@ -94,7 +94,7 @@ That's it. You get a fully configured, battle-tested REST API with:
 
 - :material-test-tube: **Automated Testing**
   
-    Unit & integration tests with 75%+ coverage
+    Unit & integration tests with 85%+ coverage
 
 - :material-github: **GitHub Actions CI**
   
