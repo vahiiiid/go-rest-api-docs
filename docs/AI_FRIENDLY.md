@@ -8,6 +8,7 @@ GRAB is designed from the ground up to work seamlessly with AI coding assistants
 
 GRAB includes **out-of-the-box AI assistance** for all major coding assistants:
 
+- **Claude Code** - Reads `AGENTS.md` automatically via `CLAUDE.md`'s import
 - **GitHub Copilot** - Works in VS Code, JetBrains IDEs, Visual Studio, and more
 - **Cursor** - Auto-loads rules with intelligent code completion
 - **Windsurf** - Always-On assistance with project awareness
@@ -16,20 +17,25 @@ GRAB includes **out-of-the-box AI assistance** for all major coding assistants:
 
 **No configuration needed** - just clone and start coding with intelligent AI suggestions tailored to GRAB's architecture.
 
+All of it is generated from one canonical file: `AGENTS.md`. It's the single source of truth; the per-tool files below are either a direct import (Claude Code) or a condensed, manually-synced adapter (Copilot, Cursor, Windsurf). See [`.agents/AI-CONFIG.md`](https://github.com/vahiiiid/go-rest-api-boilerplate/blob/main/.agents/AI-CONFIG.md) in the boilerplate repo for the full file map and the sync rule maintainers follow.
+
 ---
 
 ## 🎯 What Makes GRAB AI-Friendly?
 
 ### 1. **Comprehensive AI Guidelines**
 
-GRAB includes four types of AI configuration files:
+GRAB includes five AI configuration files, all rooted in one canonical source:
 
 | File | Purpose | Supported IDEs |
 |------|---------|----------------|
-| `.github/copilot-instructions.md` | GitHub Copilot guidelines | VS Code, JetBrains, Visual Studio, Xcode, Eclipse, CLI |
-| `.cursor/rules/grab.mdc` | Cursor-specific rules with auto-apply | Cursor IDE |
-| `.windsurf/rules/grab.md` | Windsurf-specific rules with Always-On | Windsurf IDE |
-| `AGENTS.md` | Universal AI standard (OpenAI) | All AI assistants supporting the standard |
+| `AGENTS.md` | **Canonical source of truth.** Universal AI standard ([agents.md](https://agents.md)) | All AI assistants supporting the standard, plus JetBrains AI |
+| `CLAUDE.md` | Imports `AGENTS.md` directly (`@AGENTS.md`) | Claude Code |
+| `.github/copilot-instructions.md` | GitHub Copilot guidelines (condensed, synced from `AGENTS.md`) | VS Code, JetBrains, Visual Studio, Xcode, Eclipse, CLI |
+| `.cursor/rules/grab.mdc` | Cursor-specific rules with auto-apply (condensed, synced from `AGENTS.md`) | Cursor IDE |
+| `.windsurf/rules/grab.md` | Windsurf-specific rules with Always-On (condensed, synced from `AGENTS.md`) | Windsurf IDE |
+
+Maintainers keep the condensed files in sync with `AGENTS.md` by hand — see `.agents/AI-CONFIG.md` in the boilerplate repo for the rule.
 
 ### 2. **Developer-Focused Content**
 
@@ -52,7 +58,7 @@ AI assistants understand:
 - **Domain Structure**: `internal/<domain>/` with model, dto, repository, service, handler
 - **Migration Naming**: `YYYYMMDDHHMMSS_verb_noun_table`
 - **Testing Conventions**: Table-driven tests with mocks
-- **Error Handling**: Centralized `c.Error(apiErrors.FromGinValidation(err))` pattern with constructor functions
+- **Error Handling**: Centralized `c.Error(apiErrors.FromGinValidation(err))` / `c.Error(apiErrors.InternalServerError(err))` pattern using constructor functions from `internal/errors`
 - **Context Helpers**: `contextutil.GetUserID()`, `contextutil.GetEmail()`, `contextutil.GetRoles()`, etc.
 
 ### 4. **Documentation Integration**
@@ -81,6 +87,23 @@ cd go-rest-api-boilerplate
 
 ### IDE-Specific Setup
 
+=== "Claude Code"
+
+    **How it works**: Claude Code reads `CLAUDE.md` from your repository root automatically. `CLAUDE.md` is a single line — `@AGENTS.md` — which imports the full canonical guide. No configuration needed!
+
+    **Verification**:
+
+    1. Open GRAB in your terminal and run `claude`
+    2. Ask: "What's GRAB's Clean Architecture pattern?"
+    3. Response should reference Handler → Service → Repository and cite conventions from `AGENTS.md`
+
+    **Features**:
+
+    - Always up to date with `AGENTS.md` — nothing to keep in sync manually
+    - Personal preferences: copy `CLAUDE.local.md.example` to `CLAUDE.local.md` (gitignored) and add your own overrides
+
+    **Documentation**: [Claude Code Docs](https://docs.claude.com/claude-code)
+
 === "GitHub Copilot"
 
     **Supported Editors**: VS Code, JetBrains IDEs (IntelliJ, GoLand), Visual Studio, Xcode, Eclipse, GitHub CLI
@@ -96,7 +119,7 @@ cd go-rest-api-boilerplate
     
     **Features**:
     
-    - 350+ lines of developer-focused guidelines
+    - Condensed guidelines, synced by hand from `AGENTS.md`
     - Complete domain creation examples
     - Migration patterns and best practices
     - Testing strategies
@@ -117,7 +140,7 @@ cd go-rest-api-boilerplate
     
     **Features**:
     
-    - 180+ lines of concise guidelines
+    - Concise guidelines, synced by hand from `AGENTS.md`
     - Auto-applies to all conversations
     - Quick reference tables
     - Docker-first workflow guidance
@@ -153,7 +176,7 @@ cd go-rest-api-boilerplate
     
     **Features**:
     
-    - 180+ lines of focused guidelines
+    - Focused guidelines, synced by hand from `AGENTS.md`
     - Always-On activation (no manual enabling)
     - Pattern examples with code snippets
     - Pre-commit checklist
@@ -167,15 +190,15 @@ cd go-rest-api-boilerplate
     **GitHub Copilot** (Recommended)
     
     - Automatically reads `.github/copilot-instructions.md`
-    - 350+ lines of developer-focused guidelines
+    - Condensed, developer-focused guidelines
     - No IDE-specific configuration needed
     - Same experience as VS Code Copilot
     
     **JetBrains AI Assistant**
     
     - Reads `AGENTS.md` from repository root
-    - 800+ lines comprehensive guide
-    - Universal OpenAI standard
+    - The full, canonical guide
+    - [agents.md](https://agents.md) standard
     - Works with all JetBrains IDEs
     
     **Verification** (GitHub Copilot):
@@ -219,12 +242,12 @@ cd go-rest-api-boilerplate
     
     **Features**:
     
-    - 800+ lines comprehensive guide
-    - Universal OpenAI standard
+    - The full, canonical comprehensive guide
+    - Universal [agents.md](https://agents.md) standard
     - Complete examples for all common tasks
     - Works across multiple editors
     
-    **Documentation**: [AGENTS.md Standard](https://github.com/openai/agents-md)
+    **Documentation**: [AGENTS.md Standard](https://agents.md)
 
 ---
 
@@ -232,21 +255,23 @@ cd go-rest-api-boilerplate
 
 ### Feature Matrix
 
-| Feature | GitHub Copilot | Cursor | Windsurf | GoLand/IntelliJ | AGENTS.md |
-|---------|----------------|--------|----------|-----------------|-----------|-------|
-| **Auto-loads** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes (both) | ✅ Yes |
-| **File Path** | `.github/copilot-instructions.md` | `.cursor/rules/*.mdc` | `.windsurf/rules/*.md` | Same as Copilot + `AGENTS.md` | `AGENTS.md` |
-| **Configuration** | None | YAML frontmatter | Markdown header | None | None |
-| **Activation** | Automatic | `alwaysApply: true` | "Always On" | Automatic | Automatic |
-| **Content Length** | 350+ lines | 180+ lines | 180+ lines | 350+ / 800+ lines | 800+ lines |
-| **Scope** | Developer-focused | Developer-focused | Developer-focused | Developer-focused + Universal | Universal |
-| **Customization** | N/A | Personal rules | Per-project | N/A | N/A |
-| **IDE-Specific Files** | ❌ No | ✅ Yes (`.cursor/`) | ✅ Yes (`.windsurf/`) | ❌ No | ❌ No |
+| Feature | Claude Code | GitHub Copilot | Cursor | Windsurf | GoLand/IntelliJ | AGENTS.md |
+|---------|-------------|----------------|--------|----------|-----------------|-----------|
+| **Auto-loads** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes (both) | ✅ Yes |
+| **File Path** | `CLAUDE.md` (imports `AGENTS.md`) | `.github/copilot-instructions.md` | `.cursor/rules/*.mdc` | `.windsurf/rules/*.md` | Same as Copilot + `AGENTS.md` | `AGENTS.md` |
+| **Configuration** | None | None | YAML frontmatter | Markdown header | None | None |
+| **Activation** | Automatic | Automatic | `alwaysApply: true` | "Always On" | Automatic | Automatic |
+| **Content** | Full canonical guide (via import) | Condensed, synced | Condensed, synced | Condensed, synced | Condensed + full | Full canonical guide |
+| **Scope** | Universal | Developer-focused | Developer-focused | Developer-focused | Developer-focused + Universal | Universal |
+| **Customization** | `CLAUDE.local.md` (gitignored) | N/A | Personal rules | Per-project | N/A | N/A |
+| **IDE-Specific Files** | ❌ No | ❌ No | ✅ Yes (`.cursor/`) | ✅ Yes (`.windsurf/`) | ❌ No | ❌ No |
 
 ### File Structure Overview
 
 ```
 go-rest-api-boilerplate/
+├── .agents/
+│   └── AI-CONFIG.md               # ← File map + sync rule for maintainers
 ├── .github/
 │   └── copilot-instructions.md   # ← GitHub Copilot (VS Code, GoLand, etc.)
 ├── .cursor/
@@ -255,13 +280,15 @@ go-rest-api-boilerplate/
 ├── .windsurf/
 │   └── rules/
 │       └── grab.md                # ← Windsurf IDE only
-└── AGENTS.md                      # ← Universal (JetBrains AI, Amazon Q, etc.)
+├── CLAUDE.md                      # ← Claude Code (imports AGENTS.md)
+└── AGENTS.md                      # ← Canonical source of truth (JetBrains AI, Amazon Q, etc.)
 ```
 
 ### Key Differences
 
 | IDE | Needs Dedicated Directory? | Files Used |
 |-----|---------------------------|------------|
+| **Claude Code** | ❌ No | `CLAUDE.md` |
 | **Cursor** | ✅ Yes (`.cursor/`) | `.cursor/rules/grab.mdc` |
 | **Windsurf** | ✅ Yes (`.windsurf/`) | `.windsurf/rules/grab.md` |
 | **VS Code** | ❌ No | `.github/copilot-instructions.md` |
@@ -321,17 +348,17 @@ func (h *Handler) CreateTodo(c *gin.Context) {
     
     var req CreateTodoRequest
     if err := c.ShouldBindJSON(&req); err != nil {
-        errors.HandleValidationError(c, err)  // AI uses centralized errors
+        _ = c.Error(apiErrors.FromGinValidation(err))  // AI uses centralized errors
         return
     }
     
     result, err := h.service.CreateTodo(c.Request.Context(), userID, &req)
     if err != nil {
-        errors.HandleError(c, err)  // AI handles errors consistently
+        _ = c.Error(apiErrors.InternalServerError(err))  // AI handles errors consistently
         return
     }
     
-    c.JSON(http.StatusCreated, result)
+    c.JSON(http.StatusCreated, apiErrors.Success(result))
 }
 ```
 
@@ -434,10 +461,11 @@ If you need to disable AI rules temporarily:
 
 1. **Verify file exists**:
    ```bash
+   ls -la CLAUDE.md                          # Claude Code
    ls -la .github/copilot-instructions.md    # GitHub Copilot
    ls -la .cursor/rules/grab.mdc             # Cursor
    ls -la .windsurf/rules/grab.md            # Windsurf
-   ls -la AGENTS.md                          # Universal
+   ls -la AGENTS.md                          # Universal / canonical source
    ```
 
 2. **Check file content**: Open the file and verify it has content (not empty)
@@ -531,8 +559,8 @@ If you need to disable AI rules temporarily:
 **Prompt**: "Refactor this handler to use centralized error handling"
 
 **AI Understanding**:
-- Knows about `errors.HandleError()`
-- Knows about `errors.HandleValidationError()`
+- Knows about `apiErrors.FromGinValidation()` and the other `internal/errors` constructors
+- Knows the `_ = c.Error(apiErrors.X(...))` pattern
 - Maintains response format
 - Preserves Swagger annotations
 - Follows GRAB patterns
@@ -600,16 +628,17 @@ Found ways to improve AI assistance? We'd love your input!
 ### Why separate files for different IDEs?
 
 Each IDE has unique conventions:
+- Claude Code: Reads `CLAUDE.md`, which imports `AGENTS.md` directly — no separate content to maintain
 - GitHub Copilot: Reads from `.github/` directory
 - Cursor: Uses `.mdc` with YAML frontmatter
 - Windsurf: Uses `.md` with special headers
 - Universal: AGENTS.md standard
 
-Having IDE-specific files ensures optimal experience for each tool.
+Copilot, Cursor, and Windsurf don't support importing another file's content, so their files stay as condensed, hand-synced adapters — `AGENTS.md` remains the canonical source. See `.agents/AI-CONFIG.md` in the boilerplate repo for the sync rule.
 
 ### Can I use multiple AI assistants?
 
-Yes! All files coexist peacefully. Use Copilot in VS Code, Cursor in Cursor IDE, and AGENTS.md works everywhere.
+Yes! All files coexist peacefully. Use Claude Code in the terminal, Copilot in VS Code, Cursor in Cursor IDE, and AGENTS.md works everywhere.
 
 ### Do I need to configure anything?
 
@@ -631,5 +660,5 @@ No. AI reads guidelines once and caches them. No performance impact on your deve
 
 ---
 
-**Last Updated**: 2025-12-10  
+**Last Updated**: 2026-08-17  
 **GRAB Version**: v2.0.0
